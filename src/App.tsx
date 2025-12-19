@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AppProvider } from "@/context/AppContext";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Rides from "./pages/Rides";
@@ -26,12 +27,12 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
-            <Route path="/rides" element={<Rides />} />
-            <Route path="/rides/:id" element={<RideDetails />} />
-            <Route path="/post-ride" element={<PostRide />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/my-rides" element={<MyRides />} />
-            <Route path="/messages" element={<Messages />} />
+            <Route path="/rides" element={<ProtectedRoute><Rides /></ProtectedRoute>} />
+            <Route path="/rides/:id" element={<ProtectedRoute><RideDetails /></ProtectedRoute>} />
+            <Route path="/post-ride" element={<ProtectedRoute><PostRide /></ProtectedRoute>} />
+            <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+            <Route path="/my-rides" element={<ProtectedRoute><MyRides /></ProtectedRoute>} />
+            <Route path="/messages" element={<ProtectedRoute><Messages /></ProtectedRoute>} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

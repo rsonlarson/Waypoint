@@ -1,16 +1,19 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { User as SupabaseUser, Session } from '@supabase/supabase-js';
+import { supabase } from '@/integrations/supabase/client';
 import { User, Ride, RideRequest, Message } from '@/types';
 import { mockUsers, mockRides, mockMessages } from '@/data/mockData';
 
 interface AppContextType {
   currentUser: User | null;
+  supabaseUser: SupabaseUser | null;
+  session: Session | null;
   users: User[];
   rides: Ride[];
   messages: Message[];
   isAuthenticated: boolean;
-  login: (email: string, password: string) => Promise<boolean>;
-  signup: (userData: Partial<User>, password: string) => Promise<boolean>;
-  logout: () => void;
+  isLoading: boolean;
+  logout: () => Promise<void>;
   createRide: (ride: Omit<Ride, 'id' | 'driver' | 'acceptedRiders' | 'pendingRequests' | 'createdAt' | 'status'>) => void;
   requestRide: (rideId: string, message: string) => void;
   acceptRequest: (rideId: string, requestId: string) => void;
@@ -22,68 +25,108 @@ interface AppContextType {
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export function AppProvider({ children }: { children: ReactNode }) {
+  const [supabaseUser, setSupabaseUser] = useState<SupabaseUser | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [users, setUsers] = useState<User[]>(mockUsers);
   const [rides, setRides] = useState<Ride[]>(mockRides);
   const [messages, setMessages] = useState<Message[]>(mockMessages);
 
+  // Set up auth state listener
   useEffect(() => {
-    const savedUser = localStorage.getItem('skiCarpool_currentUser');
-    if (savedUser) {
-      setCurrentUser(JSON.parse(savedUser));
-    }
-    
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      setSession(session);
+      setSupabaseUser(session?.user ?? null);
+      
+      if (session?.user) {
+        // Fetch profile data after auth state changes
+        setTimeout(() => {
+          fetchUserProfile(session.user.id);
+        }, 0);
+      } else {
+        setCurrentUser(null);
+        setIsLoading(false);
+      }
+    });
+
+    // Check for existing session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setSupabaseUser(session?.user ?? null);
+      
+      if (session?.user) {
+        fetchUserProfile(session.user.id);
+      } else {
+        setIsLoading(false);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  // Load saved rides from localStorage
+  useEffect(() => {
     const savedRides = localStorage.getItem('skiCarpool_rides');
     if (savedRides) {
       setRides(JSON.parse(savedRides));
     }
   }, []);
 
-  useEffect(() => {
-    if (currentUser) {
-      localStorage.setItem('skiCarpool_currentUser', JSON.stringify(currentUser));
-    } else {
-      localStorage.removeItem('skiCarpool_currentUser');
-    }
-  }, [currentUser]);
-
+  // Save rides to localStorage
   useEffect(() => {
     localStorage.setItem('skiCarpool_rides', JSON.stringify(rides));
   }, [rides]);
 
-  const login = async (email: string, password: string): Promise<boolean> => {
-    const user = users.find(u => u.email.toLowerCase() === email.toLowerCase());
-    if (user) {
-      setCurrentUser(user);
-      return true;
+  const fetchUserProfile = async (userId: string) => {
+    try {
+      const { data: profile, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('user_id', userId)
+        .single();
+
+      if (error) {
+        console.error('Error fetching profile:', error);
+        setIsLoading(false);
+        return;
+      }
+
+      if (profile) {
+        const user: User = {
+          id: profile.user_id,
+          email: profile.email,
+          name: profile.name,
+          school: profile.school,
+          phone: profile.phone || '',
+          bio: profile.bio || '',
+          avatar: profile.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${profile.email}`,
+          role: profile.role as 'driver' | 'rider' | 'both',
+          vehicle: profile.vehicle_make ? {
+            make: profile.vehicle_make,
+            model: profile.vehicle_model || '',
+            color: profile.vehicle_color || '',
+            passengerCapacity: profile.passenger_capacity || 4,
+            gearCapacity: profile.gear_capacity || 4,
+          } : undefined,
+          rating: Number(profile.rating) || 5.0,
+          totalRides: profile.total_rides || 0,
+          createdAt: profile.created_at,
+        };
+        setCurrentUser(user);
+      }
+    } catch (error) {
+      console.error('Error fetching profile:', error);
+    } finally {
+      setIsLoading(false);
     }
-    return false;
   };
 
-  const signup = async (userData: Partial<User>, password: string): Promise<boolean> => {
-    const newUser: User = {
-      id: Date.now().toString(),
-      email: userData.email || '',
-      name: userData.name || '',
-      school: userData.school || '',
-      phone: userData.phone || '',
-      bio: userData.bio || '',
-      avatar: userData.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${userData.email}`,
-      role: userData.role || 'rider',
-      vehicle: userData.vehicle,
-      rating: 5.0,
-      totalRides: 0,
-      createdAt: new Date().toISOString().split('T')[0],
-    };
-    
-    setUsers(prev => [...prev, newUser]);
-    setCurrentUser(newUser);
-    return true;
-  };
-
-  const logout = () => {
+  const logout = async () => {
+    await supabase.auth.signOut();
     setCurrentUser(null);
-    localStorage.removeItem('skiCarpool_currentUser');
+    setSupabaseUser(null);
+    setSession(null);
   };
 
   const createRide = (rideData: Omit<Ride, 'id' | 'driver' | 'acceptedRiders' | 'pendingRequests' | 'createdAt' | 'status'>) => {
@@ -171,23 +214,40 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setMessages(prev => [...prev, newMessage]);
   };
 
-  const updateProfile = (updates: Partial<User>) => {
-    if (!currentUser) return;
+  const updateProfile = async (updates: Partial<User>) => {
+    if (!currentUser || !supabaseUser) return;
     
     const updatedUser = { ...currentUser, ...updates };
     setCurrentUser(updatedUser);
-    setUsers(prev => prev.map(u => u.id === currentUser.id ? updatedUser : u));
+    
+    // Update in Supabase
+    await supabase
+      .from('profiles')
+      .update({
+        name: updates.name,
+        phone: updates.phone,
+        bio: updates.bio,
+        avatar: updates.avatar,
+        role: updates.role,
+        vehicle_make: updates.vehicle?.make,
+        vehicle_model: updates.vehicle?.model,
+        vehicle_color: updates.vehicle?.color,
+        passenger_capacity: updates.vehicle?.passengerCapacity,
+        gear_capacity: updates.vehicle?.gearCapacity,
+      })
+      .eq('user_id', supabaseUser.id);
   };
 
   return (
     <AppContext.Provider value={{
       currentUser,
+      supabaseUser,
+      session,
       users,
       rides,
       messages,
-      isAuthenticated: !!currentUser,
-      login,
-      signup,
+      isAuthenticated: !!supabaseUser && !!session?.user?.email_confirmed_at,
+      isLoading,
       logout,
       createRide,
       requestRide,
