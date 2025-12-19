@@ -1,3 +1,4 @@
+import { useInstallPrompt } from '@/hooks/useInstallPrompt';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Header } from '@/components/Header';
@@ -9,6 +10,7 @@ import heroImage from '@/assets/hero-carpool.jpg';
 
 export default function Index() {
   const { rides, isAuthenticated } = useApp();
+  const { install, isInstallable } = useInstallPrompt();
   const featuredRides = rides.slice(0, 3);
 
   return (
@@ -45,7 +47,14 @@ export default function Index() {
             <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto animate-slide-up" style={{ animationDelay: '100ms' }}>
               Connect with fellow college students heading to the slopes. Share the ride, split the costs, and make friends along the way.
             </p>
-
+        {isInstallable && (
+        <button
+          onClick={install}
+          className="rounded-lg bg-black px-6 py-3 text-white hover:bg-gray-800 transition"
+        >
+          Install App
+       </button>
+      )}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-slide-up" style={{ animationDelay: '200ms' }}>
               {isAuthenticated ? (
                 <>
