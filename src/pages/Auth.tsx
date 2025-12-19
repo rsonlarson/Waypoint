@@ -121,7 +121,7 @@ export default function Auth() {
   }} className="space-y-4">
       <div className="space-y-2">
         <Label htmlFor="signup-email">College Email</Label>
-        <Input id="signup-email" type="email" placeholder="you@university.edu" value={email} onChange={e => setEmail(e.target.value)} required />
+        <Input id="signup-email" type="email" placeholder="you@mines.edu" value={email} onChange={e => setEmail(e.target.value)} required />
         <p className="text-xs text-muted-foreground">Must be a .edu email address</p>
       </div>
       <div className="space-y-2">
@@ -139,10 +139,7 @@ export default function Auth() {
             <SelectValue placeholder="Select your school" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="CU Boulder">CU Boulder</SelectItem>
-            <SelectItem value="University of Denver">University of Denver</SelectItem>
             <SelectItem value="Colorado School of Mines">Colorado School of Mines</SelectItem>
-            <SelectItem value="Colorado State University">Colorado State University</SelectItem>
             <SelectItem value="Other">Other</SelectItem>
           </SelectContent>
         </Select>
