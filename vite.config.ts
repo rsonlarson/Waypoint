@@ -35,14 +35,20 @@ export default defineConfig({
             type: 'image/png'
           },
           {
-            src: "/icons/waypoint_icon_192.png",
-            sizes: "192x192",
-            type: "image/png"
+            src: '/icons/waypoint-192.png',
+            sizes: '192x192',
+            type: 'image/png'
           },
           {
-            src: "/icons/waypoint_icon_512.png",
+            src: '/icons/waypoint-512.png',
+            sizes: '512x512',
+            type: 'image/png'
+          },
+          {
+            src: "/icons/waypoint-maskable.png",
             sizes: "512x512",
-            type: "image/png"
+            type: "image/png",
+            purpose: "maskable"
           }
         ]
       }
