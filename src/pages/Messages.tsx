@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { MessageSquare, Send, Snowflake } from 'lucide-react';
+import { NotificationBanner } from '@/components/NotificationBanner';
 
 export default function Messages() {
   const navigate = useNavigate();
@@ -77,7 +78,10 @@ export default function Messages() {
       <Header />
 
       <main className="container py-8">
-        <h1 className="text-3xl font-bold text-foreground mb-6">Messages</h1>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+          <h1 className="text-3xl font-bold text-foreground">Messages</h1>
+          <NotificationBanner variant="button" />
+        </div>
 
         <div className="grid lg:grid-cols-3 gap-6 h-[600px]">
           {/* Ride List */}

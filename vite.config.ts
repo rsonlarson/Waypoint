@@ -2,19 +2,23 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react-swc'
 import { VitePWA } from 'vite-plugin-pwa'
 import tsconfigPaths from 'vite-tsconfig-paths'
-import path from 'path'
-import { zstdCompress } from 'zlib'
 
 export default defineConfig({
   base: '/',
+  server: {
+    port: 8080
+  },
   plugins: [
     react(),
     tsconfigPaths(),
     VitePWA({
-      injectRegister: false,
-      includeAssets: [],
+      injectRegister: 'auto',
+      registerType: 'autoUpdate',
+      includeAssets: ['icons/*.png'],
       strategies: 'generateSW',
-
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
+      },
       manifest: {
         name: 'Waypoint',
         short_name: 'Waypoint',

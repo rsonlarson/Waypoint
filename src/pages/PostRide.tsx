@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Header } from '@/components/Header';
 import { useApp } from '@/context/AppContext';
+import { useNotifications } from '@/context/NotificationContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -15,6 +16,7 @@ import { Mountain, Calendar, Clock, MapPin, Users, DollarSign, Snowflake } from 
 export default function PostRide() {
   const navigate = useNavigate();
   const { createRide, currentUser, isAuthenticated } = useApp();
+  const { notifyNewRide } = useNotifications();
 
   const [destination, setDestination] = useState('');
   const [departureDate, setDepartureDate] = useState('');
@@ -51,6 +53,9 @@ export default function PostRide() {
       costPerRider: parseInt(costPerRider),
       notes,
     });
+
+    // Notify others about the new ride
+    notifyNewRide(destination, currentUser!.name);
 
     toast({
       title: 'Ride posted! 🎿',
