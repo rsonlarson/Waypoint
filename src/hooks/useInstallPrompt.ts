@@ -36,5 +36,8 @@ export function useInstallPrompt() {
     }
   };
 
-  return { install, isInstallable };
+  return { install, 
+    isInstallable,
+    hasPrompt: !!promptEvent
+ };
 }

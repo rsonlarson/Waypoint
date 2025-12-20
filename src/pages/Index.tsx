@@ -10,7 +10,7 @@ import heroImage from '@/assets/hero-carpool.jpg';
 
 export default function Index() {
   const { rides, isAuthenticated } = useApp();
-  const { install, isInstallable } = useInstallPrompt();
+  const { install, hasPrompt } = useInstallPrompt();
   const featuredRides = rides.slice(0, 3);
 
   return (
@@ -76,16 +76,23 @@ export default function Index() {
                       I have an account
                     </Button>
                   </Link>
-
-                  {isInstallable && (
                     <Button
                       size="xl"
                       variant="secondary"
-                      onClick={install}
+                      onClick={() => {
+                        if (hasPrompt){
+                          install();
+                        } else{
+                          alert(
+                            "To install PowderPool:\n\n" +
+                            "• On Chrome/Edge: use the browser menu → Install App\n" +
+                            "• On iPhone: Share → Add to Home Screen"
+                          );
+                        }
+                      }}
                     >
                       Install App
                     </Button>
-                  )}
                 </>
               )}
             </div>
