@@ -84,7 +84,7 @@ export default function Index() {
                           install();
                         } else{
                           alert(
-                            "To install PowderPool:\n\n" +
+                            "To install Waypoint:\n\n" +
                             "• On Chrome/Edge: use the browser menu → Install App\n" +
                             "• On iPhone: Share → Add to Home Screen"
                           );
@@ -197,7 +197,7 @@ export default function Index() {
               </p>
               <Link to={isAuthenticated ? '/rides' : '/auth?signup=true'}>
                 <Button size="lg" className="bg-background text-foreground hover:bg-background/90">
-                  {isAuthenticated ? 'Find Your Ride' : 'Join PowderPool'}
+                  {isAuthenticated ? 'Find Your Ride' : 'Join Waypoint'}
                 </Button>
               </Link>
             </div>
@@ -213,10 +213,10 @@ export default function Index() {
               <div className="flex h-8 w-8 items-center justify-center rounded-lg gradient-mountain">
                 <Mountain className="h-4 w-4 text-primary-foreground" />
               </div>
-              <span className="font-semibold text-foreground">PowderPool</span>
+              <span className="font-semibold text-foreground">Waypoint</span>
             </div>
             <p className="text-sm text-muted-foreground">
-              © {new Date().getFullYear()} PowderPool. Made with ❄️ in Colorado.
+              © {new Date().getFullYear()} Waypoint. Made with ❄️ in Colorado.
             </p>
           </div>
         </div>

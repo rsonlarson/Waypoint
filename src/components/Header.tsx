@@ -35,7 +35,7 @@ export function Header() {
             <Mountain className="h-5 w-5 text-primary-foreground" />
           </div>
           <span className="font-bold text-xl hidden sm:inline-block text-foreground group-hover:text-primary transition-colors">
-            PowderPool
+            Waypoint
           </span>
         </Link>
 
@@ -67,8 +67,8 @@ export function Header() {
       install();
     } else {
       alert(
-        "To install PowderPool:\n\n" +
-        "• Chrome / Edge: Menu → Install App\n" +
+        "To install Waypoint:\n\n" +
+        "• Chrome / Edge: Menu → More Tools → Install App\n" +
         "• iPhone: Share → Add to Home Screen"
       );
     }

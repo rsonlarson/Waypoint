@@ -14,9 +14,10 @@ export default defineConfig({
       strategies: 'generateSW',
 
       manifest: {
-        name: 'PowderPool',
-        short_name: 'PowderPool',
-        description: 'Ski carpooling made easy',
+        name: 'Waypoint',
+        short_name: 'Waypoint',
+        description: 'Plan rides. Find your crew. Get there together.',
+        id: '/',
         start_url: '/',
         display: 'standalone',
         background_color: '#ffffff',

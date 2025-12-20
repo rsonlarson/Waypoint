@@ -141,7 +141,7 @@ export default function Auth() {
         </div>
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <CheckCircle className="h-4 w-4 text-primary" />
-          <span>You'll be redirected back to PowderPool</span>
+          <span>You'll be redirected back to Waypoint</span>
         </div>
       </div>
       <p className="text-sm text-muted-foreground">
@@ -369,7 +369,7 @@ export default function Auth() {
             <div className="flex h-9 w-9 items-center justify-center rounded-lg gradient-mountain">
               <Mountain className="h-5 w-5 text-primary-foreground" />
             </div>
-            <span className="font-bold text-xl text-foreground">PowderPool</span>
+            <span className="font-bold text-xl text-foreground">Waypoint</span>
           </Link>
         </div>
       </header>
