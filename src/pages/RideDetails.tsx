@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { Header } from '@/components/Header';
 import { useApp } from '@/context/AppContext';
+import { useNotifications } from '@/context/NotificationContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -29,6 +30,7 @@ export default function RideDetails() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { rides, currentUser, requestRide, acceptRequest, declineRequest } = useApp();
+  const { notifyRideRequest } = useNotifications();
   const [requestMessage, setRequestMessage] = useState('');
   const [showRequestDialog, setShowRequestDialog] = useState(false);
 
@@ -67,6 +69,8 @@ export default function RideDetails() {
       return;
     }
     requestRide(ride.id, requestMessage);
+    // Notify the driver about the new request
+    notifyRideRequest(currentUser.name, ride.destination);
     setShowRequestDialog(false);
     setRequestMessage('');
     toast({

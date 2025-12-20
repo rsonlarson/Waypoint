@@ -5,6 +5,7 @@ import { useApp } from '@/context/AppContext';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { NotificationBanner } from '@/components/NotificationBanner';
 import { RESORTS } from '@/types';
 import { Search, SlidersHorizontal, X, Snowflake } from 'lucide-react';
 
@@ -41,6 +42,9 @@ export default function Rides() {
       <Header />
 
       <main className="container py-8">
+        {/* Notification Banner */}
+        <NotificationBanner className="mb-6" />
+
         {/* Page Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-foreground mb-2">Find Your Powder Crew</h1>
