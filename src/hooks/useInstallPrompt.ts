@@ -11,6 +11,7 @@ export function useInstallPrompt() {
 
   useEffect(() => {
     const handler = (e: Event) => {
+        console.log("🔥 beforeinstallprompt fired");
       e.preventDefault();
       setPromptEvent(e as BeforeInstallPromptEvent);
       setIsInstallable(true);
