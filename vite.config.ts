@@ -45,10 +45,10 @@ export default defineConfig({
             type: 'image/png'
           },
           {
-            src: "/icons/waypoint-maskable.png",
-            sizes: "512x512",
-            type: "image/png",
-            purpose: "maskable"
+            src: '/icons/waypoint-maskable.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'maskable'
           }
         ]
       }
