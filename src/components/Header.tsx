@@ -11,11 +11,13 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Mountain, Menu, X, Car, Search, MessageSquare, User, LogOut } from 'lucide-react';
 import { useState } from 'react';
+import {useInstallPrompt} from "@/hooks/useInstallPrompt";
 
 export function Header() {
   const { currentUser, isAuthenticated, logout } = useApp();
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { install, hasPrompt} = useInstallPrompt();
 
   const navLinks = [
     { href: '/rides', label: 'Find a Ride', icon: Search },
@@ -57,6 +59,24 @@ export function Header() {
 
         {/* Auth/User Section */}
         <div className="flex items-center gap-3">
+        <Button
+  variant="ghost"
+  size="sm"
+  onClick={() => {
+    if (hasPrompt) {
+      install();
+    } else {
+      alert(
+        "To install PowderPool:\n\n" +
+        "• Chrome / Edge: Menu → Install App\n" +
+        "• iPhone: Share → Add to Home Screen"
+      );
+    }
+  }}
+>
+  Install App
+</Button>
+
           {isAuthenticated ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
