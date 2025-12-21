@@ -71,17 +71,35 @@ export interface Review {
   createdAt: string;
 }
 
-export const RESORTS = [
-  'Vail',
-  'Breckenridge',
-  'Keystone',
-  'Arapahoe Basin',
-  'Copper Mountain',
-  'Loveland',
-  'Winter Park',
-  'Eldora',
-  'Steamboat Springs',
-  'Aspen Snowmass',
-] as const;
+// Gas price in Golden, CO
+export const GAS_PRICE_PER_GALLON = 2.40;
 
-export type Resort = typeof RESORTS[number];
+// Average MPG for carpool vehicles
+export const AVERAGE_MPG = 25;
+
+// Resort distances from downtown Golden, CO (one-way miles)
+export const RESORT_DISTANCES: Record<string, number> = {
+  'Vail': 97,
+  'Breckenridge': 80,
+  'Keystone': 67,
+  'Arapahoe Basin': 60,
+  'Copper Mountain': 75,
+  'Loveland': 52,
+  'Winter Park': 67,
+  'Eldora': 32,
+  'Steamboat Springs': 157,
+  'Aspen Snowmass': 162,
+};
+
+export const RESORTS = Object.keys(RESORT_DISTANCES) as const;
+
+export type Resort = keyof typeof RESORT_DISTANCES;
+
+// Calculate gas cost for a round trip to a resort
+export function calculateGasCost(resort: string): number {
+  const oneWayMiles = RESORT_DISTANCES[resort] || 0;
+  const roundTripMiles = oneWayMiles * 2;
+  const gallonsNeeded = roundTripMiles / AVERAGE_MPG;
+  const totalCost = gallonsNeeded * GAS_PRICE_PER_GALLON;
+  return Math.round(totalCost);
+}
