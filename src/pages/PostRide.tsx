@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Header } from '@/components/Header';
 import { useApp } from '@/context/AppContext';
@@ -10,8 +10,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from '@/hooks/use-toast';
-import { RESORTS } from '@/types';
-import { Mountain, Calendar, Clock, MapPin, Users, DollarSign, Snowflake } from 'lucide-react';
+import { RESORTS, RESORT_DISTANCES, calculateGasCost, GAS_PRICE_PER_GALLON, AVERAGE_MPG } from '@/types';
+import { Mountain, Calendar, Clock, MapPin, Users, Fuel, Snowflake } from 'lucide-react';
 
 export default function PostRide() {
   const navigate = useNavigate();
@@ -26,9 +26,14 @@ export default function PostRide() {
   const [returnTime, setReturnTime] = useState('');
   const [seatsAvailable, setSeatsAvailable] = useState('');
   const [gearCapacity, setGearCapacity] = useState('');
-  const [costPerRider, setCostPerRider] = useState('');
   const [notes, setNotes] = useState('');
   const [loading, setLoading] = useState(false);
+
+  // Auto-calculate cost based on destination
+  const costPerRider = useMemo(() => {
+    if (!destination) return 0;
+    return calculateGasCost(destination);
+  }, [destination]);
 
   if (!isAuthenticated) {
     navigate('/auth');
@@ -50,7 +55,7 @@ export default function PostRide() {
       seatsAvailable: parseInt(seatsAvailable),
       seatsTotal: parseInt(seatsAvailable),
       gearCapacity: parseInt(gearCapacity),
-      costPerRider: parseInt(costPerRider),
+      costPerRider: costPerRider,
       notes,
     });
 
@@ -236,26 +241,29 @@ export default function PostRide() {
                   </div>
                 </div>
 
-                {/* Cost */}
+                {/* Cost - Auto-calculated based on gas */}
                 <div className="space-y-2">
-                  <Label htmlFor="costPerRider" className="flex items-center gap-2">
-                    <DollarSign className="h-4 w-4 text-evergreen" />
-                    Suggested Cost Per Rider
+                  <Label className="flex items-center gap-2">
+                    <Fuel className="h-4 w-4 text-evergreen" />
+                    Gas Cost (Auto-calculated)
                   </Label>
-                  <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
-                    <Input
-                      id="costPerRider"
-                      type="number"
-                      min="0"
-                      placeholder="25"
-                      value={costPerRider}
-                      onChange={(e) => setCostPerRider(e.target.value)}
-                      className="pl-7"
-                      required
-                    />
+                  <div className="p-4 rounded-lg bg-muted/50 border border-border">
+                    {destination ? (
+                      <div className="space-y-2">
+                        <div className="flex justify-between items-center">
+                          <span className="text-2xl font-bold text-evergreen">${costPerRider}</span>
+                          <span className="text-sm text-muted-foreground">total gas cost</span>
+                        </div>
+                        <div className="text-xs text-muted-foreground space-y-1">
+                          <p>📍 {RESORT_DISTANCES[destination]} miles each way ({RESORT_DISTANCES[destination] * 2} mi round trip)</p>
+                          <p>⛽ ${GAS_PRICE_PER_GALLON.toFixed(2)}/gal × {((RESORT_DISTANCES[destination] * 2) / AVERAGE_MPG).toFixed(1)} gal needed</p>
+                        </div>
+                      </div>
+                    ) : (
+                      <p className="text-sm text-muted-foreground">Select a destination to see gas cost</p>
+                    )}
                   </div>
-                  <p className="text-xs text-muted-foreground">Split gas, tolls, and parking costs</p>
+                  <p className="text-xs text-muted-foreground">Based on gas prices in Golden ($2.40/gal) and {AVERAGE_MPG} MPG</p>
                 </div>
 
                 {/* Notes */}
