@@ -77,6 +77,166 @@ export type Database = {
         }
         Relationships: []
       }
+      ride_notifications: {
+        Row: {
+          acknowledged_at: string | null
+          id: string
+          notification_type: string
+          ride_id: string
+          sent_at: string
+          user_id: string
+        }
+        Insert: {
+          acknowledged_at?: string | null
+          id?: string
+          notification_type: string
+          ride_id: string
+          sent_at?: string
+          user_id: string
+        }
+        Update: {
+          acknowledged_at?: string | null
+          id?: string
+          notification_type?: string
+          ride_id?: string
+          sent_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ride_notifications_ride_id_fkey"
+            columns: ["ride_id"]
+            isOneToOne: false
+            referencedRelation: "rides"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ride_requests: {
+        Row: {
+          confirmed_present: boolean | null
+          created_at: string
+          id: string
+          marked_no_show: boolean | null
+          message: string | null
+          no_show_action: string | null
+          ride_id: string
+          rider_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          confirmed_present?: boolean | null
+          created_at?: string
+          id?: string
+          marked_no_show?: boolean | null
+          message?: string | null
+          no_show_action?: string | null
+          ride_id: string
+          rider_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          confirmed_present?: boolean | null
+          created_at?: string
+          id?: string
+          marked_no_show?: boolean | null
+          message?: string | null
+          no_show_action?: string | null
+          ride_id?: string
+          rider_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ride_requests_ride_id_fkey"
+            columns: ["ride_id"]
+            isOneToOne: false
+            referencedRelation: "rides"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      rides: {
+        Row: {
+          actual_return_time: string | null
+          cost_per_rider: number
+          created_at: string
+          departure_date: string
+          departure_location: string
+          departure_time: string
+          destination: string
+          driver_id: string
+          gear_capacity: number
+          id: string
+          lifecycle_status: Database["public"]["Enums"]["ride_lifecycle_status"]
+          notes: string | null
+          pickup_confirmed_at: string | null
+          return_date: string
+          return_ended_at: string | null
+          return_started_at: string | null
+          return_time: string
+          ride_ended_at: string | null
+          ride_started_at: string | null
+          seats_available: number
+          seats_total: number
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          actual_return_time?: string | null
+          cost_per_rider?: number
+          created_at?: string
+          departure_date: string
+          departure_location: string
+          departure_time: string
+          destination: string
+          driver_id: string
+          gear_capacity?: number
+          id?: string
+          lifecycle_status?: Database["public"]["Enums"]["ride_lifecycle_status"]
+          notes?: string | null
+          pickup_confirmed_at?: string | null
+          return_date: string
+          return_ended_at?: string | null
+          return_started_at?: string | null
+          return_time: string
+          ride_ended_at?: string | null
+          ride_started_at?: string | null
+          seats_available?: number
+          seats_total?: number
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          actual_return_time?: string | null
+          cost_per_rider?: number
+          created_at?: string
+          departure_date?: string
+          departure_location?: string
+          departure_time?: string
+          destination?: string
+          driver_id?: string
+          gear_capacity?: number
+          id?: string
+          lifecycle_status?: Database["public"]["Enums"]["ride_lifecycle_status"]
+          notes?: string | null
+          pickup_confirmed_at?: string | null
+          return_date?: string
+          return_ended_at?: string | null
+          return_started_at?: string | null
+          return_time?: string
+          ride_ended_at?: string | null
+          ride_started_at?: string | null
+          seats_available?: number
+          seats_total?: number
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -85,7 +245,13 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      ride_lifecycle_status:
+        | "scheduled"
+        | "pickup_window"
+        | "in_progress"
+        | "return_window"
+        | "completed"
+        | "cancelled"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -212,6 +378,15 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      ride_lifecycle_status: [
+        "scheduled",
+        "pickup_window",
+        "in_progress",
+        "return_window",
+        "completed",
+        "cancelled",
+      ],
+    },
   },
 } as const
