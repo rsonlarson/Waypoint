@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { Header } from '@/components/Header';
 import { useApp } from '@/context/AppContext';
 import { useNotifications } from '@/context/NotificationContext';
@@ -11,7 +11,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from '@/hooks/use-toast';
 import { RESORTS, RESORT_DISTANCES, calculateGasCost, GAS_PRICE_PER_GALLON, AVERAGE_MPG } from '@/types';
-import { Mountain, Calendar, Clock, MapPin, Users, Fuel, Snowflake } from 'lucide-react';
+import { Mountain, Calendar, Clock, MapPin, Users, Fuel, Snowflake, FileText } from 'lucide-react';
 
 export default function PostRide() {
   const navigate = useNavigate();
@@ -85,6 +85,10 @@ export default function PostRide() {
             </div>
             <h1 className="text-3xl font-bold text-foreground mb-2">Share the Stoke</h1>
             <p className="text-muted-foreground">Post your ride and find your crew</p>
+            <Link to="/driver-guide" className="inline-flex items-center gap-1 mt-2 text-sm text-primary hover:underline">
+              <FileText className="h-4 w-4" />
+              Read the Driver's Guide
+            </Link>
           </div>
 
           <Card className="shadow-card">
@@ -276,6 +280,27 @@ export default function PostRide() {
                     onChange={(e) => setNotes(e.target.value)}
                     rows={4}
                   />
+                </div>
+
+                {/* Pickup Window Disclaimer */}
+                <div className="p-4 rounded-lg bg-accent/10 border border-accent/20">
+                  <div className="flex items-start gap-3">
+                    <Clock className="h-5 w-5 text-accent mt-0.5 shrink-0" />
+                    <div className="space-y-1">
+                      <p className="font-medium text-foreground text-sm">16-Minute Pickup Window</p>
+                      <p className="text-sm text-muted-foreground">
+                        You and your riders will receive a notification 16 minutes before departure. 
+                        Use this time to arrive at the pickup location. Both drivers and riders are 
+                        expected to be present and ready during this window.
+                      </p>
+                      <Link 
+                        to="/driver-guide" 
+                        className="text-sm text-primary hover:underline inline-flex items-center gap-1"
+                      >
+                        Learn more about the ride process
+                      </Link>
+                    </div>
+                  </div>
                 </div>
 
                 <Button type="submit" variant="gradient" size="lg" className="w-full" disabled={loading}>
