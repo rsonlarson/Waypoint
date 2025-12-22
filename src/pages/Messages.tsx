@@ -83,14 +83,14 @@ export default function Messages() {
           <NotificationBanner variant="button" />
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-6 h-[600px]">
+        <div className="grid lg:grid-cols-3 gap-6 h-auto lg:h-[600px]">
           {/* Ride List */}
           <Card className="shadow-card lg:col-span-1">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-lg">Your Rides</CardTitle>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base">Your Rides</CardTitle>
             </CardHeader>
             <CardContent className="p-0">
-              <ScrollArea className="h-[500px]">
+              <ScrollArea className="h-[140px] lg:h-[500px]">
                 <div className="divide-y divide-border">
                   {myRides.map((ride) => (
                     <button
