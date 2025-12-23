@@ -117,7 +117,7 @@ export const mockRides: Ride[] = [
     destination: 'Breckenridge',
     departureDate: formatDate(3),
     departureTime: '6:00 AM',
-    departureLocation: 'CU Boulder - Farrand Field',
+    departureLocation: 'Mines Golden, Lot D outside the trads',
     returnDate: formatDate(3),
     returnTime: '5:00 PM',
     seatsAvailable: 2,
@@ -272,8 +272,8 @@ export const mockMessages: Message[] = [
 ];
 
 export const stats = {
-  totalRidesShared: 1247,
-  studentsConnected: 892,
-  co2Saved: '15.2 tons',
-  activeSchools: 12,
+  totalRidesShared: 12,
+  studentsConnected: 35,
+  co2Saved: '2 tons',
+  activeSchools: 1,
 };
