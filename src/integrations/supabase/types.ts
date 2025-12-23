@@ -28,6 +28,7 @@ export type Database = {
           rating: number | null
           role: string
           school: string
+          signup_waiver_accepted_at: string | null
           total_rides: number | null
           updated_at: string
           user_id: string
@@ -48,6 +49,7 @@ export type Database = {
           rating?: number | null
           role?: string
           school: string
+          signup_waiver_accepted_at?: string | null
           total_rides?: number | null
           updated_at?: string
           user_id: string
@@ -68,6 +70,7 @@ export type Database = {
           rating?: number | null
           role?: string
           school?: string
+          signup_waiver_accepted_at?: string | null
           total_rides?: number | null
           updated_at?: string
           user_id?: string
@@ -122,6 +125,7 @@ export type Database = {
           no_show_action: string | null
           ride_id: string
           rider_id: string
+          rider_waiver_accepted_at: string | null
           status: string
           updated_at: string
         }
@@ -134,6 +138,7 @@ export type Database = {
           no_show_action?: string | null
           ride_id: string
           rider_id: string
+          rider_waiver_accepted_at?: string | null
           status?: string
           updated_at?: string
         }
@@ -146,6 +151,7 @@ export type Database = {
           no_show_action?: string | null
           ride_id?: string
           rider_id?: string
+          rider_waiver_accepted_at?: string | null
           status?: string
           updated_at?: string
         }
@@ -169,6 +175,7 @@ export type Database = {
           departure_time: string
           destination: string
           driver_id: string
+          driver_waiver_accepted_at: string | null
           gear_capacity: number
           id: string
           lifecycle_status: Database["public"]["Enums"]["ride_lifecycle_status"]
@@ -194,6 +201,7 @@ export type Database = {
           departure_time: string
           destination: string
           driver_id: string
+          driver_waiver_accepted_at?: string | null
           gear_capacity?: number
           id?: string
           lifecycle_status?: Database["public"]["Enums"]["ride_lifecycle_status"]
@@ -219,6 +227,7 @@ export type Database = {
           departure_time?: string
           destination?: string
           driver_id?: string
+          driver_waiver_accepted_at?: string | null
           gear_capacity?: number
           id?: string
           lifecycle_status?: Database["public"]["Enums"]["ride_lifecycle_status"]
