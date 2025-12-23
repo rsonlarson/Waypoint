@@ -9,6 +9,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { LiabilityWaiver } from '@/components/LiabilityWaiver';
 import { toast } from '@/hooks/use-toast';
 import { RESORTS, RESORT_DISTANCES, calculateGasCost, GAS_PRICE_PER_GALLON, AVERAGE_MPG } from '@/types';
 import { Mountain, Calendar, Clock, MapPin, Users, Fuel, Snowflake, FileText } from 'lucide-react';
@@ -28,6 +29,7 @@ export default function PostRide() {
   const [gearCapacity, setGearCapacity] = useState('');
   const [notes, setNotes] = useState('');
   const [loading, setLoading] = useState(false);
+  const [driverWaiverAccepted, setDriverWaiverAccepted] = useState(false);
 
   // Auto-calculate cost based on destination
   const costPerRider = useMemo(() => {
@@ -303,7 +305,14 @@ export default function PostRide() {
                   </div>
                 </div>
 
-                <Button type="submit" variant="gradient" size="lg" className="w-full" disabled={loading}>
+                {/* Driver Liability Waiver */}
+                <LiabilityWaiver 
+                  type="driver" 
+                  checked={driverWaiverAccepted} 
+                  onCheckedChange={setDriverWaiverAccepted} 
+                />
+
+                <Button type="submit" variant="gradient" size="lg" className="w-full" disabled={loading || !driverWaiverAccepted}>
                   {loading ? 'Posting...' : 'Post Your Ride'}
                 </Button>
               </form>

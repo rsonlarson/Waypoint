@@ -10,6 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { StarRating } from '@/components/StarRating';
+import { LiabilityWaiver } from '@/components/LiabilityWaiver';
 import { toast } from '@/hooks/use-toast';
 import {
   MapPin,
@@ -33,6 +34,7 @@ export default function RideDetails() {
   const { notifyRideRequest } = useNotifications();
   const [requestMessage, setRequestMessage] = useState('');
   const [showRequestDialog, setShowRequestDialog] = useState(false);
+  const [riderWaiverAccepted, setRiderWaiverAccepted] = useState(false);
 
   const ride = rides.find((r) => r.id === id);
 
@@ -179,7 +181,11 @@ export default function RideDetails() {
                 </CardHeader>
                 <CardContent className="space-y-3">
                   {ride.acceptedRiders.map((rider) => (
-                    <div key={rider.id} className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
+                    <Link 
+                      key={rider.id} 
+                      to={`/user/${rider.id}`}
+                      className="flex items-center justify-between p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
+                    >
                       <div className="flex items-center gap-3">
                         <Avatar className="h-10 w-10">
                           <AvatarImage src={rider.avatar} />
@@ -194,7 +200,7 @@ export default function RideDetails() {
                         <Star className="h-4 w-4 fill-sunset text-sunset" />
                         <span className="text-sm font-medium">{rider.rating.toFixed(1)}</span>
                       </div>
-                    </div>
+                    </Link>
                   ))}
                 </CardContent>
               </Card>
@@ -213,7 +219,10 @@ export default function RideDetails() {
                   {ride.pendingRequests.map((request) => (
                     <div key={request.id} className="p-4 rounded-lg border border-border bg-card">
                       <div className="flex items-start justify-between gap-4 mb-3">
-                        <div className="flex items-center gap-3">
+                        <Link 
+                          to={`/user/${request.rider.id}`}
+                          className="flex items-center gap-3 hover:opacity-80 transition-opacity"
+                        >
                           <Avatar className="h-12 w-12">
                             <AvatarImage src={request.rider.avatar} />
                             <AvatarFallback>{request.rider.name.charAt(0)}</AvatarFallback>
@@ -228,7 +237,7 @@ export default function RideDetails() {
                               </span>
                             </div>
                           </div>
-                        </div>
+                        </Link>
                       </div>
                       {request.message && (
                         <p className="text-sm text-muted-foreground mb-4 p-3 rounded bg-muted/50">
@@ -270,7 +279,10 @@ export default function RideDetails() {
                 <CardTitle className="text-lg">Your Driver</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="flex items-center gap-3 mb-4">
+                <Link 
+                  to={`/user/${ride.driver.id}`}
+                  className="flex items-center gap-3 mb-4 hover:opacity-80 transition-opacity"
+                >
                   <Avatar className="h-14 w-14 border-2 border-primary/20">
                     <AvatarImage src={ride.driver.avatar} />
                     <AvatarFallback>{ride.driver.name.charAt(0)}</AvatarFallback>
@@ -285,7 +297,7 @@ export default function RideDetails() {
                       </span>
                     </div>
                   </div>
-                </div>
+                </Link>
                 <p className="text-sm text-muted-foreground mb-4">{ride.driver.bio}</p>
                 {ride.driver.vehicle && (
                   <div className="p-3 rounded-lg bg-muted/50">
@@ -328,7 +340,12 @@ export default function RideDetails() {
                         rows={4}
                       />
                     </div>
-                    <Button variant="gradient" onClick={handleRequestRide} className="w-full">
+                    <LiabilityWaiver 
+                      type="rider" 
+                      checked={riderWaiverAccepted} 
+                      onCheckedChange={setRiderWaiverAccepted} 
+                    />
+                    <Button variant="gradient" onClick={handleRequestRide} className="w-full" disabled={!riderWaiverAccepted}>
                       Send Request
                     </Button>
                   </div>

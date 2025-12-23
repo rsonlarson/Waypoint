@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { LiabilityWaiver } from '@/components/LiabilityWaiver';
 import { toast } from '@/hooks/use-toast';
 import { Mountain, ArrowLeft, Car, User, Mail, CheckCircle } from 'lucide-react';
 
@@ -31,6 +32,7 @@ export default function Auth() {
   const [vehicleColor, setVehicleColor] = useState('');
   const [passengerCapacity, setPassengerCapacity] = useState('4');
   const [gearCapacity, setGearCapacity] = useState('4');
+  const [signupWaiverAccepted, setSignupWaiverAccepted] = useState(false);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
@@ -235,7 +237,12 @@ export default function Auth() {
           </SelectContent>
         </Select>
       </div>
-      <Button type="submit" className="w-full" variant="gradient">
+      <LiabilityWaiver 
+        type="signup" 
+        checked={signupWaiverAccepted} 
+        onCheckedChange={setSignupWaiverAccepted} 
+      />
+      <Button type="submit" className="w-full" variant="gradient" disabled={!signupWaiverAccepted}>
         Continue
       </Button>
     </form>

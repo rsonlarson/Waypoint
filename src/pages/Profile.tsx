@@ -9,9 +9,11 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
+import { ProfilePhotoUpload } from '@/components/ProfilePhotoUpload';
 import { StarRating } from '@/components/StarRating';
 import { toast } from '@/hooks/use-toast';
-import { User, Car, Star, Calendar } from 'lucide-react';
+import { User, Car, Calendar } from 'lucide-react';
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -22,22 +24,30 @@ export default function Profile() {
   const [phone, setPhone] = useState(currentUser?.phone || '');
   const [bio, setBio] = useState(currentUser?.bio || '');
   const [role, setRole] = useState(currentUser?.role || 'rider');
+  const [avatar, setAvatar] = useState(currentUser?.avatar || '');
   const [vehicleMake, setVehicleMake] = useState(currentUser?.vehicle?.make || '');
   const [vehicleModel, setVehicleModel] = useState(currentUser?.vehicle?.model || '');
   const [vehicleColor, setVehicleColor] = useState(currentUser?.vehicle?.color || '');
   const [passengerCapacity, setPassengerCapacity] = useState(currentUser?.vehicle?.passengerCapacity?.toString() || '4');
   const [gearCapacity, setGearCapacity] = useState(currentUser?.vehicle?.gearCapacity?.toString() || '4');
+  const [imageOpen, setImageOpen] = useState(false);
 
   if (!isAuthenticated || !currentUser) {
     navigate('/auth');
     return null;
   }
 
+  const handleAvatarChange = (newAvatarUrl: string) => {
+    setAvatar(newAvatarUrl);
+    updateProfile({ avatar: newAvatarUrl });
+  };
+
   const handleSave = () => {
     updateProfile({
       name,
       phone,
       bio,
+      avatar,
       role: role as 'driver' | 'rider' | 'both',
       vehicle: role !== 'rider' ? {
         make: vehicleMake,
@@ -51,6 +61,8 @@ export default function Profile() {
     toast({ title: 'Profile updated!', description: 'Your changes have been saved.' });
   };
 
+  const avatarUrl = currentUser.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${currentUser.email}`;
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -61,10 +73,30 @@ export default function Profile() {
             <CardHeader>
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-4">
-                  <Avatar className="h-20 w-20 border-4 border-primary/20">
-                    <AvatarImage src={currentUser.avatar} />
-                    <AvatarFallback className="text-2xl">{currentUser.name.charAt(0)}</AvatarFallback>
-                  </Avatar>
+                  {isEditing ? (
+                    <ProfilePhotoUpload
+                      currentAvatar={avatarUrl}
+                      userName={currentUser.name}
+                      userId={currentUser.id}
+                      onAvatarChange={handleAvatarChange}
+                    />
+                  ) : (
+                    <Dialog open={imageOpen} onOpenChange={setImageOpen}>
+                      <DialogTrigger asChild>
+                        <Avatar className="h-20 w-20 border-4 border-primary/20 cursor-pointer hover:ring-2 hover:ring-primary transition-all">
+                          <AvatarImage src={avatarUrl} />
+                          <AvatarFallback className="text-2xl">{currentUser.name.charAt(0)}</AvatarFallback>
+                        </Avatar>
+                      </DialogTrigger>
+                      <DialogContent className="max-w-md p-0 bg-transparent border-none">
+                        <img 
+                          src={avatarUrl} 
+                          alt={currentUser.name} 
+                          className="w-full h-auto rounded-lg"
+                        />
+                      </DialogContent>
+                    </Dialog>
+                  )}
                   <div>
                     <CardTitle className="text-2xl">{currentUser.name}</CardTitle>
                     <CardDescription>{currentUser.school}</CardDescription>
