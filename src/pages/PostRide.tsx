@@ -1,20 +1,23 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useMemo } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import { Header } from '@/components/Header';
 import { useApp } from '@/context/AppContext';
+import { useNotifications } from '@/context/NotificationContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { LiabilityWaiver } from '@/components/LiabilityWaiver';
 import { toast } from '@/hooks/use-toast';
-import { RESORTS } from '@/types';
-import { Mountain, Calendar, Clock, MapPin, Users, DollarSign, Snowflake } from 'lucide-react';
+import { RESORTS, RESORT_DISTANCES, calculateGasCost, GAS_PRICE_PER_GALLON, AVERAGE_MPG } from '@/types';
+import { Mountain, Calendar, Clock, MapPin, Users, Fuel, Snowflake, FileText } from 'lucide-react';
 
 export default function PostRide() {
   const navigate = useNavigate();
   const { createRide, currentUser, isAuthenticated } = useApp();
+  const { notifyNewRide } = useNotifications();
 
   const [destination, setDestination] = useState('');
   const [departureDate, setDepartureDate] = useState('');
@@ -24,9 +27,15 @@ export default function PostRide() {
   const [returnTime, setReturnTime] = useState('');
   const [seatsAvailable, setSeatsAvailable] = useState('');
   const [gearCapacity, setGearCapacity] = useState('');
-  const [costPerRider, setCostPerRider] = useState('');
   const [notes, setNotes] = useState('');
   const [loading, setLoading] = useState(false);
+  const [driverWaiverAccepted, setDriverWaiverAccepted] = useState(false);
+
+  // Auto-calculate cost based on destination
+  const costPerRider = useMemo(() => {
+    if (!destination) return 0;
+    return calculateGasCost(destination);
+  }, [destination]);
 
   if (!isAuthenticated) {
     navigate('/auth');
@@ -48,9 +57,12 @@ export default function PostRide() {
       seatsAvailable: parseInt(seatsAvailable),
       seatsTotal: parseInt(seatsAvailable),
       gearCapacity: parseInt(gearCapacity),
-      costPerRider: parseInt(costPerRider),
+      costPerRider: costPerRider,
       notes,
     });
+
+    // Notify others about the new ride
+    notifyNewRide(destination, currentUser!.name);
 
     toast({
       title: 'Ride posted! 🎿',
@@ -75,6 +87,10 @@ export default function PostRide() {
             </div>
             <h1 className="text-3xl font-bold text-foreground mb-2">Share the Stoke</h1>
             <p className="text-muted-foreground">Post your ride and find your crew</p>
+            <Link to="/driver-guide" className="inline-flex items-center gap-1 mt-2 text-sm text-primary hover:underline">
+              <FileText className="h-4 w-4" />
+              Read the Driver's Guide
+            </Link>
           </div>
 
           <Card className="shadow-card">
@@ -231,26 +247,29 @@ export default function PostRide() {
                   </div>
                 </div>
 
-                {/* Cost */}
+                {/* Cost - Auto-calculated based on gas */}
                 <div className="space-y-2">
-                  <Label htmlFor="costPerRider" className="flex items-center gap-2">
-                    <DollarSign className="h-4 w-4 text-evergreen" />
-                    Suggested Cost Per Rider
+                  <Label className="flex items-center gap-2">
+                    <Fuel className="h-4 w-4 text-evergreen" />
+                    Gas Cost (Auto-calculated)
                   </Label>
-                  <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
-                    <Input
-                      id="costPerRider"
-                      type="number"
-                      min="0"
-                      placeholder="25"
-                      value={costPerRider}
-                      onChange={(e) => setCostPerRider(e.target.value)}
-                      className="pl-7"
-                      required
-                    />
+                  <div className="p-4 rounded-lg bg-muted/50 border border-border">
+                    {destination ? (
+                      <div className="space-y-2">
+                        <div className="flex justify-between items-center">
+                          <span className="text-2xl font-bold text-evergreen">${costPerRider}</span>
+                          <span className="text-sm text-muted-foreground">total gas cost</span>
+                        </div>
+                        <div className="text-xs text-muted-foreground space-y-1">
+                          <p>📍 {RESORT_DISTANCES[destination]} miles each way ({RESORT_DISTANCES[destination] * 2} mi round trip)</p>
+                          <p>⛽ ${GAS_PRICE_PER_GALLON.toFixed(2)}/gal × {((RESORT_DISTANCES[destination] * 2) / AVERAGE_MPG).toFixed(1)} gal needed</p>
+                        </div>
+                      </div>
+                    ) : (
+                      <p className="text-sm text-muted-foreground">Select a destination to see gas cost</p>
+                    )}
                   </div>
-                  <p className="text-xs text-muted-foreground">Split gas, tolls, and parking costs</p>
+                  <p className="text-xs text-muted-foreground">Based on gas prices in Golden ($2.40/gal) and {AVERAGE_MPG} MPG</p>
                 </div>
 
                 {/* Notes */}
@@ -265,7 +284,35 @@ export default function PostRide() {
                   />
                 </div>
 
-                <Button type="submit" variant="gradient" size="lg" className="w-full" disabled={loading}>
+                {/* Pickup Window Disclaimer */}
+                <div className="p-4 rounded-lg bg-accent/10 border border-accent/20">
+                  <div className="flex items-start gap-3">
+                    <Clock className="h-5 w-5 text-accent mt-0.5 shrink-0" />
+                    <div className="space-y-1">
+                      <p className="font-medium text-foreground text-sm">16-Minute Pickup Window</p>
+                      <p className="text-sm text-muted-foreground">
+                        You and your riders will receive a notification 16 minutes before departure. 
+                        Use this time to arrive at the pickup location. Both drivers and riders are 
+                        expected to be present and ready during this window.
+                      </p>
+                      <Link 
+                        to="/driver-guide" 
+                        className="text-sm text-primary hover:underline inline-flex items-center gap-1"
+                      >
+                        Learn more about the ride process
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Driver Liability Waiver */}
+                <LiabilityWaiver 
+                  type="driver" 
+                  checked={driverWaiverAccepted} 
+                  onCheckedChange={setDriverWaiverAccepted} 
+                />
+
+                <Button type="submit" variant="gradient" size="lg" className="w-full" disabled={loading || !driverWaiverAccepted}>
                   {loading ? 'Posting...' : 'Post Your Ride'}
                 </Button>
               </form>

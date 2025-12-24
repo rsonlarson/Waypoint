@@ -1,4 +1,4 @@
-import { User, Ride, RideRequest, Message } from '@/types';
+import { User, Ride, RideRequest, Message, calculateGasCost } from '@/types';
 
 export const mockUsers: User[] = [
   {
@@ -123,7 +123,7 @@ export const mockRides: Ride[] = [
     seatsAvailable: 2,
     seatsTotal: 4,
     gearCapacity: 6,
-    costPerRider: 25,
+    costPerRider: calculateGasCost('Breckenridge'),
     notes: 'Early bird gets the powder! Planning to hit Peak 8 bowls. Acoustic jam session on the drive welcome 🎸',
     status: 'open',
     acceptedRiders: [mockUsers[1]],
@@ -143,7 +143,7 @@ export const mockRides: Ride[] = [
     seatsAvailable: 3,
     seatsTotal: 4,
     gearCapacity: 8,
-    costPerRider: 35,
+    costPerRider: calculateGasCost('Vail'),
     notes: 'Blue sky basin day! Looking for intermediate+ riders who can keep up. All terrain welcome.',
     status: 'open',
     acceptedRiders: [],
@@ -173,7 +173,7 @@ export const mockRides: Ride[] = [
     seatsAvailable: 1,
     seatsTotal: 3,
     gearCapacity: 4,
-    costPerRider: 20,
+    costPerRider: calculateGasCost('Keystone'),
     notes: 'Night skiing after! Staying until 8pm. Après at the Snake River Saloon?',
     status: 'open',
     acceptedRiders: [mockUsers[5]],
@@ -193,7 +193,7 @@ export const mockRides: Ride[] = [
     seatsAvailable: 4,
     seatsTotal: 4,
     gearCapacity: 6,
-    costPerRider: 18,
+    costPerRider: calculateGasCost('Arapahoe Basin'),
     notes: 'A-Basin opening day! Early season vibes. Bring layers, could be cold up top. 🥶',
     status: 'open',
     acceptedRiders: [],
@@ -213,7 +213,7 @@ export const mockRides: Ride[] = [
     seatsAvailable: 2,
     seatsTotal: 4,
     gearCapacity: 8,
-    costPerRider: 28,
+    costPerRider: calculateGasCost('Copper Mountain'),
     notes: 'Woodward at Copper day! Bringing the GoPro. Terrain park crew welcome 🎬',
     status: 'open',
     acceptedRiders: [mockUsers[1]],
@@ -243,7 +243,7 @@ export const mockRides: Ride[] = [
     seatsAvailable: 3,
     seatsTotal: 3,
     gearCapacity: 4,
-    costPerRider: 15,
+    costPerRider: calculateGasCost('Loveland'),
     notes: 'Budget-friendly day! Loveland has great deals. Perfect for practicing.',
     status: 'open',
     acceptedRiders: [],

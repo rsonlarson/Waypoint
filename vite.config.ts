@@ -3,18 +3,26 @@ import react from '@vitejs/plugin-react-swc'
 import { VitePWA } from 'vite-plugin-pwa'
 import tsconfigPaths from 'vite-tsconfig-paths'
 import path from 'path'
-import { zstdCompress } from 'zlib'
+import { componentTagger } from 'lovable-tagger'
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   base: '/',
+  server: {
+    host: '::',
+    port: 8080
+  },
   plugins: [
     react(),
     tsconfigPaths(),
+    mode === 'development' && componentTagger(),
     VitePWA({
-      injectRegister: false,
-      includeAssets: [],
+      injectRegister: 'auto',
+      registerType: 'autoUpdate',
+      includeAssets: ['icons/*.png'],
       strategies: 'generateSW',
-
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
+      },
       manifest: {
         name: 'Waypoint',
         short_name: 'Waypoint',
@@ -44,5 +52,10 @@ export default defineConfig({
         ]
       }
     })
-  ]
-})
+  ].filter(Boolean),
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src')
+    }
+  }
+}))
