@@ -106,12 +106,19 @@ export function AppProvider({ children }: { children: ReactNode }) {
             make: profile.vehicle_make,
             model: profile.vehicle_model || '',
             color: profile.vehicle_color || '',
+            year: profile.vehicle_year || undefined,
+            licensePlate: profile.license_plate || undefined,
+            gearStorage: profile.gear_storage || undefined,
             passengerCapacity: profile.passenger_capacity || 4,
             gearCapacity: profile.gear_capacity || 4,
           } : undefined,
           rating: Number(profile.rating) || 5.0,
           totalRides: profile.total_rides || 0,
           createdAt: profile.created_at,
+          yearInSchool: profile.year_in_school || undefined,
+          major: profile.major || undefined,
+          sportPreference: profile.sport_preference || undefined,
+          favoriteMusic: profile.favorite_music || undefined,
         };
         setCurrentUser(user);
       }
@@ -232,8 +239,15 @@ export function AppProvider({ children }: { children: ReactNode }) {
         vehicle_make: updates.vehicle?.make,
         vehicle_model: updates.vehicle?.model,
         vehicle_color: updates.vehicle?.color,
+        vehicle_year: updates.vehicle?.year,
+        license_plate: updates.vehicle?.licensePlate,
+        gear_storage: updates.vehicle?.gearStorage,
         passenger_capacity: updates.vehicle?.passengerCapacity,
         gear_capacity: updates.vehicle?.gearCapacity,
+        year_in_school: updates.yearInSchool,
+        major: updates.major,
+        sport_preference: updates.sportPreference,
+        favorite_music: updates.favoriteMusic,
       })
       .eq('user_id', supabaseUser.id);
   };

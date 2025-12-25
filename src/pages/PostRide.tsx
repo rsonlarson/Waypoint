@@ -156,18 +156,13 @@ export default function PostRide() {
                       <Clock className="h-4 w-4 text-primary" />
                       Departure Time
                     </Label>
-                    <Select value={departureTime} onValueChange={setDepartureTime} required>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select time" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {['5:00 AM', '5:30 AM', '6:00 AM', '6:30 AM', '7:00 AM', '7:30 AM', '8:00 AM', '8:30 AM', '9:00 AM'].map((time) => (
-                          <SelectItem key={time} value={time}>
-                            {time}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <Input
+                      id="departureTime"
+                      type="time"
+                      value={departureTime}
+                      onChange={(e) => setDepartureTime(e.target.value)}
+                      required
+                    />
                   </div>
                 </div>
 
@@ -192,18 +187,13 @@ export default function PostRide() {
                       <Clock className="h-4 w-4 text-primary" />
                       Return Time
                     </Label>
-                    <Select value={returnTime} onValueChange={setReturnTime} required>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select time" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {['2:00 PM', '3:00 PM', '4:00 PM', '5:00 PM', '6:00 PM', '7:00 PM', '8:00 PM', '9:00 PM'].map((time) => (
-                          <SelectItem key={time} value={time}>
-                            {time}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <Input
+                      id="returnTime"
+                      type="time"
+                      value={returnTime}
+                      onChange={(e) => setReturnTime(e.target.value)}
+                      required
+                    />
                   </div>
                 </div>
 

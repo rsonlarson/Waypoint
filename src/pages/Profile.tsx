@@ -13,7 +13,7 @@ import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { ProfilePhotoUpload } from '@/components/ProfilePhotoUpload';
 import { StarRating } from '@/components/StarRating';
 import { toast } from '@/hooks/use-toast';
-import { User, Car, Calendar } from 'lucide-react';
+import { User, Car, Calendar, Music, GraduationCap, Snowflake } from 'lucide-react';
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -25,9 +25,20 @@ export default function Profile() {
   const [bio, setBio] = useState(currentUser?.bio || '');
   const [role, setRole] = useState(currentUser?.role || 'rider');
   const [avatar, setAvatar] = useState(currentUser?.avatar || '');
+  
+  // New profile fields
+  const [yearInSchool, setYearInSchool] = useState(currentUser?.yearInSchool || '');
+  const [major, setMajor] = useState(currentUser?.major || '');
+  const [sportPreference, setSportPreference] = useState(currentUser?.sportPreference || '');
+  const [favoriteMusic, setFavoriteMusic] = useState(currentUser?.favoriteMusic || '');
+  
+  // Vehicle fields
   const [vehicleMake, setVehicleMake] = useState(currentUser?.vehicle?.make || '');
   const [vehicleModel, setVehicleModel] = useState(currentUser?.vehicle?.model || '');
   const [vehicleColor, setVehicleColor] = useState(currentUser?.vehicle?.color || '');
+  const [vehicleYear, setVehicleYear] = useState(currentUser?.vehicle?.year?.toString() || '');
+  const [licensePlate, setLicensePlate] = useState(currentUser?.vehicle?.licensePlate || '');
+  const [gearStorage, setGearStorage] = useState(currentUser?.vehicle?.gearStorage || '');
   const [passengerCapacity, setPassengerCapacity] = useState(currentUser?.vehicle?.passengerCapacity?.toString() || '4');
   const [gearCapacity, setGearCapacity] = useState(currentUser?.vehicle?.gearCapacity?.toString() || '4');
   const [imageOpen, setImageOpen] = useState(false);
@@ -49,10 +60,17 @@ export default function Profile() {
       bio,
       avatar,
       role: role as 'driver' | 'rider' | 'both',
+      yearInSchool,
+      major,
+      sportPreference,
+      favoriteMusic,
       vehicle: role !== 'rider' ? {
         make: vehicleMake,
         model: vehicleModel,
         color: vehicleColor,
+        year: vehicleYear ? parseInt(vehicleYear) : undefined,
+        licensePlate,
+        gearStorage,
         passengerCapacity: parseInt(passengerCapacity),
         gearCapacity: parseInt(gearCapacity),
       } : undefined,
@@ -148,6 +166,66 @@ export default function Profile() {
                       </Select>
                     </div>
 
+                    {/* New Profile Fields */}
+                    <div className="space-y-4 p-4 rounded-lg bg-muted/50 border border-border">
+                      <h4 className="font-medium flex items-center gap-2">
+                        <GraduationCap className="h-4 w-4" />
+                        School Info
+                      </h4>
+                      <div className="grid sm:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label>Year in School</Label>
+                          <Select value={yearInSchool} onValueChange={setYearInSchool}>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select year" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="Freshman">Freshman</SelectItem>
+                              <SelectItem value="Sophomore">Sophomore</SelectItem>
+                              <SelectItem value="Junior">Junior</SelectItem>
+                              <SelectItem value="Senior">Senior</SelectItem>
+                              <SelectItem value="Graduate">Graduate</SelectItem>
+                              <SelectItem value="Other">Other</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Major</Label>
+                          <Input value={major} onChange={(e) => setMajor(e.target.value)} placeholder="e.g., Computer Science" />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="space-y-4 p-4 rounded-lg bg-muted/50 border border-border">
+                      <h4 className="font-medium flex items-center gap-2">
+                        <Snowflake className="h-4 w-4" />
+                        Preferences
+                      </h4>
+                      <div className="grid sm:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label>Ski/Snowboard</Label>
+                          <Select value={sportPreference} onValueChange={setSportPreference}>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select preference" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="Ski">Ski</SelectItem>
+                              <SelectItem value="Snowboard">Snowboard</SelectItem>
+                              <SelectItem value="Both">Both</SelectItem>
+                              <SelectItem value="Other">Other</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="space-y-2">
+                          <Label className="flex items-center gap-1">
+                            <Music className="h-3 w-3" />
+                            Favorite Music
+                          </Label>
+                          <Input value={favoriteMusic} onChange={(e) => setFavoriteMusic(e.target.value)} placeholder="e.g., Rock, Hip-hop, Country" />
+                        </div>
+                      </div>
+                    </div>
+
                     {role !== 'rider' && (
                       <div className="space-y-4 p-4 rounded-lg bg-muted/50 border border-border">
                         <h4 className="font-medium flex items-center gap-2">
@@ -156,16 +234,46 @@ export default function Profile() {
                         </h4>
                         <div className="grid sm:grid-cols-2 gap-4">
                           <div className="space-y-2">
+                            <Label>Year</Label>
+                            <Input 
+                              type="number" 
+                              value={vehicleYear} 
+                              onChange={(e) => setVehicleYear(e.target.value)} 
+                              placeholder="e.g., 2020"
+                              min="1990"
+                              max={new Date().getFullYear() + 1}
+                            />
+                          </div>
+                          <div className="space-y-2">
                             <Label>Make</Label>
-                            <Input value={vehicleMake} onChange={(e) => setVehicleMake(e.target.value)} />
+                            <Input value={vehicleMake} onChange={(e) => setVehicleMake(e.target.value)} placeholder="e.g., Toyota" />
                           </div>
                           <div className="space-y-2">
                             <Label>Model</Label>
-                            <Input value={vehicleModel} onChange={(e) => setVehicleModel(e.target.value)} />
+                            <Input value={vehicleModel} onChange={(e) => setVehicleModel(e.target.value)} placeholder="e.g., 4Runner" />
                           </div>
                           <div className="space-y-2">
                             <Label>Color</Label>
-                            <Input value={vehicleColor} onChange={(e) => setVehicleColor(e.target.value)} />
+                            <Input value={vehicleColor} onChange={(e) => setVehicleColor(e.target.value)} placeholder="e.g., White" />
+                          </div>
+                          <div className="space-y-2">
+                            <Label>License Plate (Private)</Label>
+                            <Input value={licensePlate} onChange={(e) => setLicensePlate(e.target.value)} placeholder="e.g., ABC-123" />
+                            <p className="text-xs text-muted-foreground">Only visible to you</p>
+                          </div>
+                          <div className="space-y-2">
+                            <Label>Gear Storage</Label>
+                            <Select value={gearStorage} onValueChange={setGearStorage}>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select type" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="Ski Rack">Ski Rack</SelectItem>
+                                <SelectItem value="Back of Car">Back of Car</SelectItem>
+                                <SelectItem value="Roof Box">Roof Box</SelectItem>
+                                <SelectItem value="Other">Other</SelectItem>
+                              </SelectContent>
+                            </Select>
                           </div>
                           <div className="space-y-2">
                             <Label>Passenger Seats</Label>
@@ -175,6 +283,19 @@ export default function Profile() {
                               </SelectTrigger>
                               <SelectContent>
                                 {[1, 2, 3, 4, 5, 6, 7].map((n) => (
+                                  <SelectItem key={n} value={n.toString()}>{n}</SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div className="space-y-2">
+                            <Label>Gear Spots</Label>
+                            <Select value={gearCapacity} onValueChange={setGearCapacity}>
+                              <SelectTrigger>
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
                                   <SelectItem key={n} value={n.toString()}>{n}</SelectItem>
                                 ))}
                               </SelectContent>
@@ -212,9 +333,34 @@ export default function Profile() {
                       </div>
                     </div>
 
+                    <div className="grid sm:grid-cols-2 gap-4">
+                      <div className="p-4 rounded-lg bg-muted/50">
+                        <p className="text-sm text-muted-foreground mb-1">Role</p>
+                        <p className="font-medium capitalize">{currentUser.role}</p>
+                      </div>
+                      <div className="p-4 rounded-lg bg-muted/50">
+                        <p className="text-sm text-muted-foreground mb-1">Year in School</p>
+                        <p className="font-medium">{currentUser.yearInSchool || 'Not set'}</p>
+                      </div>
+                    </div>
+
+                    <div className="grid sm:grid-cols-2 gap-4">
+                      <div className="p-4 rounded-lg bg-muted/50">
+                        <p className="text-sm text-muted-foreground mb-1">Major</p>
+                        <p className="font-medium">{currentUser.major || 'Not set'}</p>
+                      </div>
+                      <div className="p-4 rounded-lg bg-muted/50">
+                        <p className="text-sm text-muted-foreground mb-1">Ski/Snowboard</p>
+                        <p className="font-medium">{currentUser.sportPreference || 'Not set'}</p>
+                      </div>
+                    </div>
+
                     <div className="p-4 rounded-lg bg-muted/50">
-                      <p className="text-sm text-muted-foreground mb-1">Role</p>
-                      <p className="font-medium capitalize">{currentUser.role}</p>
+                      <div className="flex items-center gap-2 mb-1">
+                        <Music className="h-4 w-4 text-primary" />
+                        <p className="text-sm text-muted-foreground">Favorite Music</p>
+                      </div>
+                      <p className="font-medium">{currentUser.favoriteMusic || 'Not set'}</p>
                     </div>
 
                     {currentUser.vehicle && (
@@ -224,12 +370,20 @@ export default function Profile() {
                           <span className="font-medium">My Vehicle</span>
                         </div>
                         <p className="font-semibold text-lg mb-2">
+                          {currentUser.vehicle.year && `${currentUser.vehicle.year} `}
                           {currentUser.vehicle.color} {currentUser.vehicle.make} {currentUser.vehicle.model}
                         </p>
-                        <div className="flex gap-4 text-sm text-muted-foreground">
+                        <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
                           <span>{currentUser.vehicle.passengerCapacity} passenger seats</span>
                           <span>{currentUser.vehicle.gearCapacity} gear spots</span>
+                          {currentUser.vehicle.gearStorage && <span>Gear: {currentUser.vehicle.gearStorage}</span>}
                         </div>
+                        {currentUser.vehicle.licensePlate && (
+                          <p className="text-sm text-muted-foreground mt-2">
+                            License Plate: <span className="font-medium">{currentUser.vehicle.licensePlate}</span>
+                            <span className="text-xs ml-2">(only visible to you)</span>
+                          </p>
+                        )}
                       </div>
                     )}
                   </div>

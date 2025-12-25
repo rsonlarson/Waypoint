@@ -8,7 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { StarRating } from '@/components/StarRating';
 import { supabase } from '@/integrations/supabase/client';
-import { ArrowLeft, User, Car, Calendar } from 'lucide-react';
+import { ArrowLeft, User, Car, Calendar, GraduationCap, Snowflake, Music } from 'lucide-react';
 
 interface ProfileData {
   user_id: string;
@@ -24,8 +24,14 @@ interface ProfileData {
   vehicle_make: string | null;
   vehicle_model: string | null;
   vehicle_color: string | null;
+  vehicle_year: number | null;
+  gear_storage: string | null;
   passenger_capacity: number | null;
   gear_capacity: number | null;
+  year_in_school: string | null;
+  major: string | null;
+  sport_preference: string | null;
+  favorite_music: string | null;
 }
 
 export default function UserProfile() {
@@ -44,7 +50,7 @@ export default function UserProfile() {
         .from('profiles')
         .select('*')
         .eq('user_id', userId)
-        .single();
+        .maybeSingle();
       
       if (error) {
         console.error('Error fetching profile:', error);
@@ -158,6 +164,45 @@ export default function UserProfile() {
                 </div>
               </div>
 
+              {/* School Info */}
+              {(profile.year_in_school || profile.major) && (
+                <div className="p-4 rounded-lg bg-muted/50">
+                  <div className="flex items-center gap-2 mb-2">
+                    <GraduationCap className="h-4 w-4 text-primary" />
+                    <span className="font-medium">School Info</span>
+                  </div>
+                  <div className="grid sm:grid-cols-2 gap-2 text-sm">
+                    {profile.year_in_school && (
+                      <p><span className="text-muted-foreground">Year:</span> {profile.year_in_school}</p>
+                    )}
+                    {profile.major && (
+                      <p><span className="text-muted-foreground">Major:</span> {profile.major}</p>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Preferences */}
+              {(profile.sport_preference || profile.favorite_music) && (
+                <div className="p-4 rounded-lg bg-muted/50">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Snowflake className="h-4 w-4 text-primary" />
+                    <span className="font-medium">Preferences</span>
+                  </div>
+                  <div className="grid sm:grid-cols-2 gap-2 text-sm">
+                    {profile.sport_preference && (
+                      <p><span className="text-muted-foreground">Sport:</span> {profile.sport_preference}</p>
+                    )}
+                    {profile.favorite_music && (
+                      <p className="flex items-center gap-1">
+                        <Music className="h-3 w-3 text-muted-foreground" />
+                        <span className="text-muted-foreground">Music:</span> {profile.favorite_music}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              )}
+
               {profile.vehicle_make && (
                 <div className="p-4 rounded-lg bg-primary/5 border border-primary/10">
                   <div className="flex items-center gap-2 mb-3">
@@ -165,11 +210,13 @@ export default function UserProfile() {
                     <span className="font-medium">Vehicle</span>
                   </div>
                   <p className="font-semibold text-lg mb-2">
+                    {profile.vehicle_year && `${profile.vehicle_year} `}
                     {profile.vehicle_color} {profile.vehicle_make} {profile.vehicle_model}
                   </p>
-                  <div className="flex gap-4 text-sm text-muted-foreground">
+                  <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
                     <span>{profile.passenger_capacity} passenger seats</span>
                     <span>{profile.gear_capacity} gear spots</span>
+                    {profile.gear_storage && <span>Gear: {profile.gear_storage}</span>}
                   </div>
                 </div>
               )}
