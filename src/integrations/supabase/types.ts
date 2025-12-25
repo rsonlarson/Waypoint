@@ -20,8 +20,12 @@ export type Database = {
           bio: string | null
           created_at: string
           email: string
+          favorite_music: string | null
           gear_capacity: number | null
+          gear_storage: string | null
           id: string
+          license_plate: string | null
+          major: string | null
           name: string
           passenger_capacity: number | null
           phone: string | null
@@ -29,20 +33,27 @@ export type Database = {
           role: string
           school: string
           signup_waiver_accepted_at: string | null
+          sport_preference: string | null
           total_rides: number | null
           updated_at: string
           user_id: string
           vehicle_color: string | null
           vehicle_make: string | null
           vehicle_model: string | null
+          vehicle_year: number | null
+          year_in_school: string | null
         }
         Insert: {
           avatar?: string | null
           bio?: string | null
           created_at?: string
           email: string
+          favorite_music?: string | null
           gear_capacity?: number | null
+          gear_storage?: string | null
           id?: string
+          license_plate?: string | null
+          major?: string | null
           name: string
           passenger_capacity?: number | null
           phone?: string | null
@@ -50,20 +61,27 @@ export type Database = {
           role?: string
           school: string
           signup_waiver_accepted_at?: string | null
+          sport_preference?: string | null
           total_rides?: number | null
           updated_at?: string
           user_id: string
           vehicle_color?: string | null
           vehicle_make?: string | null
           vehicle_model?: string | null
+          vehicle_year?: number | null
+          year_in_school?: string | null
         }
         Update: {
           avatar?: string | null
           bio?: string | null
           created_at?: string
           email?: string
+          favorite_music?: string | null
           gear_capacity?: number | null
+          gear_storage?: string | null
           id?: string
+          license_plate?: string | null
+          major?: string | null
           name?: string
           passenger_capacity?: number | null
           phone?: string | null
@@ -71,12 +89,15 @@ export type Database = {
           role?: string
           school?: string
           signup_waiver_accepted_at?: string | null
+          sport_preference?: string | null
           total_rides?: number | null
           updated_at?: string
           user_id?: string
           vehicle_color?: string | null
           vehicle_make?: string | null
           vehicle_model?: string | null
+          vehicle_year?: number | null
+          year_in_school?: string | null
         }
         Relationships: []
       }

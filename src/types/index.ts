@@ -11,12 +11,20 @@ export interface User {
   rating: number;
   totalRides: number;
   createdAt: string;
+  // New profile fields
+  yearInSchool?: string;
+  major?: string;
+  sportPreference?: string;
+  favoriteMusic?: string;
 }
 
 export interface Vehicle {
   make: string;
   model: string;
   color: string;
+  year?: number;
+  licensePlate?: string;
+  gearStorage?: string;
   passengerCapacity: number;
   gearCapacity: number;
 }
