@@ -1,0 +1,7 @@
+{
+  "name": "Waypoint",
+  "short_name": "Waypoint",
+  "start_url": "/",
+  "display": "standalone",
+  "icons": []
+}
