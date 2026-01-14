@@ -9,7 +9,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { LiabilityWaiver } from '@/components/LiabilityWaiver';
 import { toast } from '@/hooks/use-toast';
-import { Mountain, ArrowLeft, Car, User, Mail, CheckCircle } from 'lucide-react';
+import { ArrowLeft, Car, User, Mail, CheckCircle } from 'lucide-react';
+import { Brand } from "@/components/Brand";
+
+
 
 export default function Auth() {
   const [searchParams] = useSearchParams();
@@ -277,7 +280,7 @@ export default function Auth() {
           {[
             { value: 'rider', label: 'Find Rides', icon: User, desc: 'I need rides to the mountain' },
             { value: 'driver', label: 'Offer Rides', icon: Car, desc: 'I have a car and want to drive' },
-            { value: 'both', label: 'Both', icon: Mountain, desc: 'I can do both!' }
+            { value: 'both', label: 'Both', icon: Brand, desc: 'I can do both!' }
           ].map(option => (
             <button 
               key={option.value} 
@@ -373,10 +376,7 @@ export default function Auth() {
       <header className="border-b border-border">
         <div className="container py-4">
           <Link to="/" className="flex items-center gap-2 w-fit">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg gradient-mountain">
-              <Mountain className="h-5 w-5 text-primary-foreground" />
-            </div>
-            <span className="font-bold text-xl text-foreground">Waypoint</span>
+            <Brand />
           </Link>
         </div>
       </header>
