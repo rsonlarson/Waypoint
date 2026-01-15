@@ -11,9 +11,10 @@ import {
   Timer,
   Bell,
   Car,
-  Mountain,
   MessageSquare,
 } from 'lucide-react';
+import { Brand } from "@/components/Brand";
+
 
 export default function DriverGuide() {
   return (
@@ -31,7 +32,7 @@ export default function DriverGuide() {
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-8">
             <div className="inline-flex items-center justify-center h-14 w-14 rounded-xl gradient-mountain mb-4">
-              <Mountain className="h-7 w-7 text-primary-foreground" />
+              <Brand />
             </div>
             <h1 className="text-3xl font-bold text-foreground mb-2">Driver's Guide</h1>
             <p className="text-muted-foreground">
@@ -182,7 +183,7 @@ export default function DriverGuide() {
             <Card className="shadow-card">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Mountain className="h-5 w-5 text-primary" />
+                  <Brand/>
                   Return Trip
                 </CardTitle>
               </CardHeader>
