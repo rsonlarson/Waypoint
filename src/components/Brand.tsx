@@ -1,4 +1,4 @@
-export function Brand({ size = 40, showText = true }: { size?: number; showText?: boolean }) {
+export function Brand({ size = 40, showText = true, textSize = "text-xl" }: { size?: number; showText?: boolean; textSize?: string }) {
   return (
     <div className="flex items-center gap-3">
       <img
@@ -8,7 +8,7 @@ export function Brand({ size = 40, showText = true }: { size?: number; showText?
         className="w-auto object-contain"
       />
       {showText && (
-        <span className="text-2xl font-bold leading-none">
+        <span className={`${textSize} font-bold leading-none`}>
           Waypoint
         </span>
       )}

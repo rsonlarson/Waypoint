@@ -12,6 +12,7 @@ import {
   Bell,
   Car,
   MessageSquare,
+  Mountain,
 } from 'lucide-react';
 import { Brand } from "@/components/Brand";
 
@@ -31,8 +32,8 @@ export default function DriverGuide() {
 
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center h-14 w-14 rounded-xl gradient-mountain mb-4">
-              <Brand />
+            <div className="flex justify-center mb-8">
+              <Brand size={72} showText={false}/>
             </div>
             <h1 className="text-3xl font-bold text-foreground mb-2">Driver's Guide</h1>
             <p className="text-muted-foreground">
@@ -63,7 +64,7 @@ export default function DriverGuide() {
                     { step: 5, title: 'Hit the Slopes', desc: 'Enjoy the mountain!' },
                     { step: 6, title: 'Return Pickup', desc: 'Gather crew for the ride home' },
                   ].map((item) => (
-                    <div key={item.step} className="flex items-center gap-4 p-3 rounded-lg bg-muted/50">
+                    <div key={item.step} className="flex items-center gap-4 p-3 rounded-lg bg-muted/75">
                       <div className="h-8 w-8 rounded-full gradient-mountain flex items-center justify-center text-sm font-bold text-primary-foreground">
                         {item.step}
                       </div>
@@ -183,7 +184,7 @@ export default function DriverGuide() {
             <Card className="shadow-card">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Brand/>
+                  <Mountain className="h-5 w-5 text-primary" />
                   Return Trip
                 </CardTitle>
               </CardHeader>
