@@ -280,9 +280,9 @@ export default function PostRide() {
                   <div className="flex items-start gap-3">
                     <Clock className="h-5 w-5 text-accent mt-0.5 shrink-0" />
                     <div className="space-y-1">
-                      <p className="font-medium text-foreground text-sm">16-Minute Pickup Window</p>
+                      <p className="font-medium text-foreground text-sm">15-Minute Pickup Window</p>
                       <p className="text-sm text-muted-foreground">
-                        You and your riders will receive a notification 16 minutes before departure. 
+                        You and your riders will receive a notification 15 minutes before departure. 
                         Use this time to arrive at the pickup location. Both drivers and riders are 
                         expected to be present and ready during this window.
                       </p>
