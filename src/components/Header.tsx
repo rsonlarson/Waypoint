@@ -9,9 +9,17 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Mountain, Menu, X, Car, Search, MessageSquare, User, LogOut } from 'lucide-react';
+import { Menu, X, Car, Search, MessageSquare, User, LogOut } from 'lucide-react';
 import { useState } from 'react';
 import {useInstallPrompt} from "@/hooks/useInstallPrompt";
+
+<img
+  src = "/logo.png"
+  alt="Waypoint"
+  className="h-10 w-10 object-contain"
+  draggable={false}
+/>
+
 
 export function Header() {
   const { currentUser, isAuthenticated, logout } = useApp();
@@ -31,12 +39,12 @@ export function Header() {
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between">
         <Link to="/" className="flex items-center gap-2 group">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg gradient-mountain">
-            <Mountain className="h-5 w-5 text-primary-foreground" />
-          </div>
-          <span className="font-bold text-xl hidden sm:inline-block text-foreground group-hover:text-primary transition-colors">
-            Waypoint
-          </span>
+            <img
+              src="/logo.png"
+              alt="Waypoint"
+              className="h-10 w-10 object-contain"
+            />
+           <span className="text-2xl font-bold leading-none">Waypoint</span>
         </Link>
 
         {/* Desktop Navigation */}

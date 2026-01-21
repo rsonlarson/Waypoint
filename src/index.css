@@ -18,7 +18,7 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222 47% 11%;
 
-    --primary: 217 91% 60%;
+    --primary: 223 76% 40%;
     --primary-foreground: 0 0% 100%;
 
     --secondary: 160 84% 25%;
@@ -35,12 +35,12 @@
 
     --border: 214 32% 91%;
     --input: 214 32% 91%;
-    --ring: 217 91% 60%;
+    --ring: 223 76% 40%;
 
     --radius: 0.75rem;
 
     /* Custom tokens */
-    --powder: 217 91% 60%;
+    --powder: 223 76% 40%;
     --snow: 210 40% 98%;
     --evergreen: 160 84% 25%;
     --evergreen-light: 158 64% 92%;
@@ -49,13 +49,13 @@
     --mountain: 222 47% 25%;
     --ice: 199 89% 95%;
 
-    --gradient-mountain: linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(199 89% 48%) 100%);
+    --gradient-mountain: linear-gradient(135deg, hsl(223 76% 40%) 0%, hsl(199 89% 48%) 100%);
     --gradient-sunset: linear-gradient(135deg, hsl(24 95% 53%) 0%, hsl(350 80% 55%) 100%);
     --gradient-snow: linear-gradient(180deg, hsl(210 40% 98%) 0%, hsl(210 40% 96%) 100%);
     
-    --shadow-card: 0 4px 20px -4px hsl(217 91% 60% / 0.15);
-    --shadow-hover: 0 8px 30px -4px hsl(217 91% 60% / 0.25);
-    --shadow-glow: 0 0 40px hsl(217 91% 60% / 0.3);
+    --shadow-card: 0 4px 20px -4px hsl(223 76% 40% / 0.15);
+    --shadow-hover: 0 8px 30px -4px hsl(223 76% 40% / 0.25);
+    --shadow-glow: 0 0 40px hsl(223 76% 40% / 0.3);
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
@@ -64,7 +64,7 @@
     --sidebar-accent: 240 4.8% 95.9%;
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-ring: 223 76% 55%;
   }
 
   .dark {

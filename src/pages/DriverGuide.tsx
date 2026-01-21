@@ -11,9 +11,11 @@ import {
   Timer,
   Bell,
   Car,
-  Mountain,
   MessageSquare,
+  Mountain,
 } from 'lucide-react';
+import { Brand } from "@/components/Brand";
+
 
 export default function DriverGuide() {
   return (
@@ -30,8 +32,8 @@ export default function DriverGuide() {
 
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center h-14 w-14 rounded-xl gradient-mountain mb-4">
-              <Mountain className="h-7 w-7 text-primary-foreground" />
+            <div className="flex justify-center mb-8">
+              <Brand size={72} showText={false}/>
             </div>
             <h1 className="text-3xl font-bold text-foreground mb-2">Driver's Guide</h1>
             <p className="text-muted-foreground">
@@ -57,12 +59,12 @@ export default function DriverGuide() {
                   {[
                     { step: 1, title: 'Post Your Ride', desc: 'Set destination, times, and capacity' },
                     { step: 2, title: 'Accept Riders', desc: 'Review and approve ride requests' },
-                    { step: 3, title: 'Pickup Window', desc: '16-minute window to gather everyone' },
+                    { step: 3, title: 'Pickup Window', desc: '15-minute window to gather everyone' },
                     { step: 4, title: 'Confirm Attendance', desc: 'Mark who showed up' },
                     { step: 5, title: 'Hit the Slopes', desc: 'Enjoy the mountain!' },
                     { step: 6, title: 'Return Pickup', desc: 'Gather crew for the ride home' },
                   ].map((item) => (
-                    <div key={item.step} className="flex items-center gap-4 p-3 rounded-lg bg-muted/50">
+                    <div key={item.step} className="flex items-center gap-4 p-3 rounded-lg bg-muted/75">
                       <div className="h-8 w-8 rounded-full gradient-mountain flex items-center justify-center text-sm font-bold text-primary-foreground">
                         {item.step}
                       </div>
@@ -81,7 +83,7 @@ export default function DriverGuide() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Clock className="h-5 w-5 text-accent" />
-                  The 16-Minute Pickup Window
+                  The 15-Minute Pickup Window
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -91,7 +93,7 @@ export default function DriverGuide() {
                     <li className="flex items-start gap-2">
                       <Bell className="h-4 w-4 mt-0.5 text-accent" />
                       <span>
-                        16 minutes before departure, both you and your riders will receive a notification
+                        15 minutes before departure, both you and your riders will receive a notification
                         that the pickup window has started.
                       </span>
                     </li>
@@ -194,7 +196,7 @@ export default function DriverGuide() {
                   <li className="flex items-start gap-2">
                     <Bell className="h-4 w-4 mt-0.5 text-primary" />
                     <span>
-                      You'll get a notification 16 minutes before the scheduled return time.
+                      You'll get a notification 15 minutes before the scheduled return time.
                     </span>
                   </li>
                   <li className="flex items-start gap-2">

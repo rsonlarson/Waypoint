@@ -13,6 +13,7 @@ import { LiabilityWaiver } from '@/components/LiabilityWaiver';
 import { toast } from '@/hooks/use-toast';
 import { RESORTS, RESORT_DISTANCES, calculateGasCost, GAS_PRICE_PER_GALLON, AVERAGE_MPG } from '@/types';
 import { Mountain, Calendar, Clock, MapPin, Users, Fuel, Snowflake, FileText } from 'lucide-react';
+import {Brand} from "@/components/Brand";
 
 export default function PostRide() {
   const navigate = useNavigate();
@@ -83,7 +84,7 @@ export default function PostRide() {
         <div className="max-w-2xl mx-auto">
           <div className="text-center mb-8">
             <div className="inline-flex items-center justify-center h-14 w-14 rounded-xl gradient-mountain mb-4">
-              <Mountain className="h-7 w-7 text-primary-foreground" />
+              <Brand size={64} showText={false} />
             </div>
             <h1 className="text-3xl font-bold text-foreground mb-2">Share the Stoke</h1>
             <p className="text-muted-foreground">Post your ride and find your crew</p>
@@ -279,9 +280,9 @@ export default function PostRide() {
                   <div className="flex items-start gap-3">
                     <Clock className="h-5 w-5 text-accent mt-0.5 shrink-0" />
                     <div className="space-y-1">
-                      <p className="font-medium text-foreground text-sm">16-Minute Pickup Window</p>
+                      <p className="font-medium text-foreground text-sm">15-Minute Pickup Window</p>
                       <p className="text-sm text-muted-foreground">
-                        You and your riders will receive a notification 16 minutes before departure. 
+                        You and your riders will receive a notification 15 minutes before departure. 
                         Use this time to arrive at the pickup location. Both drivers and riders are 
                         expected to be present and ready during this window.
                       </p>
