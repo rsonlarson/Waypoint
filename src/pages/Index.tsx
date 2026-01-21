@@ -35,11 +35,7 @@ export default function Index() {
 
         <div className="container relative py-20 md:py-32">
           <div className="max-w-3xl mx-auto text-center">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary mb-6 animate-fade-in">
-              <Snowflake className="h-4 w-4" />
-              <span className="text-sm font-medium">Colorado's Student Ski Carpool Community</span>
-            </div>
-
+            
             <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-6 animate-slide-up">
               Find Your{' '}
               <span className="text-gradient">Powder Crew</span>
@@ -112,7 +108,7 @@ export default function Index() {
               <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
                 Upcoming Rides
               </h2>
-              <p className="text-muted-foreground">Jump into an adventure this week</p>
+              <p className="text-muted-foreground">Discover who else is hitting the slopes</p>
             </div>
             <Link to="/rides">
               <Button variant="ghost" className="gap-2">
