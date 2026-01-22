@@ -1,8 +1,7 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { User as SupabaseUser, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { User, Ride, RideRequest, Message } from '@/types';
-import { mockUsers, mockRides, mockMessages } from '@/data/mockData';
 
 interface AppContextType {
   currentUser: User | null;
@@ -14,12 +13,13 @@ interface AppContextType {
   isAuthenticated: boolean;
   isLoading: boolean;
   logout: () => Promise<void>;
-  createRide: (ride: Omit<Ride, 'id' | 'driver' | 'acceptedRiders' | 'pendingRequests' | 'createdAt' | 'status'>) => void;
-  requestRide: (rideId: string, message: string) => void;
-  acceptRequest: (rideId: string, requestId: string) => void;
-  declineRequest: (rideId: string, requestId: string) => void;
-  sendMessage: (rideId: string, content: string) => void;
-  updateProfile: (updates: Partial<User>) => void;
+  createRide: (ride: Omit<Ride, 'id' | 'driver' | 'acceptedRiders' | 'pendingRequests' | 'createdAt' | 'status'>) => Promise<void>;
+  requestRide: (rideId: string, message: string) => Promise<void>;
+  acceptRequest: (rideId: string, requestId: string) => Promise<void>;
+  declineRequest: (rideId: string, requestId: string) => Promise<void>;
+  sendMessage: (rideId: string, content: string) => Promise<void>;
+  updateProfile: (updates: Partial<User>) => Promise<void>;
+  fetchMessages: (rideId: string) => Promise<void>;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -29,32 +29,25 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [users, setUsers] = useState<User[]>(mockUsers);
-  const [rides, setRides] = useState<Ride[]>(mockRides);
-  const [messages, setMessages] = useState<Message[]>(mockMessages);
+  const [users, setUsers] = useState<User[]>([]);
+  const [rides, setRides] = useState<Ride[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
 
-  // Set up auth state listener
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       setSession(session);
       setSupabaseUser(session?.user ?? null);
-      
       if (session?.user) {
-        // Fetch profile data after auth state changes
-        setTimeout(() => {
-          fetchUserProfile(session.user.id);
-        }, 0);
+        fetchUserProfile(session.user.id);
       } else {
         setCurrentUser(null);
         setIsLoading(false);
       }
     });
 
-    // Check for existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setSupabaseUser(session?.user ?? null);
-      
       if (session?.user) {
         fetchUserProfile(session.user.id);
       } else {
@@ -65,18 +58,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
     return () => subscription.unsubscribe();
   }, []);
 
-  // Load saved rides from localStorage
   useEffect(() => {
-    const savedRides = localStorage.getItem('skiCarpool_rides');
-    if (savedRides) {
-      setRides(JSON.parse(savedRides));
+    if (session) {
+      fetchRides();
     }
-  }, []);
-
-  // Save rides to localStorage
-  useEffect(() => {
-    localStorage.setItem('skiCarpool_rides', JSON.stringify(rides));
-  }, [rides]);
+  }, [session]);
 
   const fetchUserProfile = async (userId: string) => {
     try {
@@ -86,11 +72,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         .eq('user_id', userId)
         .single();
 
-      if (error) {
-        console.error('Error fetching profile:', error);
-        setIsLoading(false);
-        return;
-      }
+      if (error) throw error;
 
       if (profile) {
         const user: User = {
@@ -129,6 +111,94 @@ export function AppProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const fetchRides = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('rides')
+        .select(`
+          *,
+          driver:profiles!rides_driver_id_fkey(*)
+        `)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      
+      const transformedRides: Ride[] = (data || []).map(r => ({
+        id: r.id,
+        driverId: r.driver_id,
+        driver: {
+          id: r.driver.user_id,
+          email: r.driver.email,
+          name: r.driver.name,
+          school: r.driver.school,
+          phone: r.driver.phone || '',
+          bio: r.driver.bio || '',
+          avatar: r.driver.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${r.driver.email}`,
+          role: r.driver.role as 'driver' | 'rider' | 'both',
+          rating: Number(r.driver.rating) || 5.0,
+          totalRides: r.driver.total_rides || 0,
+          createdAt: r.driver.created_at,
+        },
+        destination: r.destination,
+        departureDate: r.departure_date,
+        departureTime: r.departure_time,
+        departureLocation: r.departure_location,
+        returnDate: r.return_date,
+        returnTime: r.return_time,
+        seatsAvailable: r.seats_available,
+        seatsTotal: r.seats_total,
+        gearCapacity: r.gear_capacity,
+        costPerRider: Number(r.cost_per_rider),
+        notes: r.notes || '',
+        status: r.status as any,
+        acceptedRiders: [], 
+        pendingRequests: [], 
+        createdAt: r.created_at,
+      }));
+      
+      setRides(transformedRides);
+    } catch (error) {
+      console.error('Error fetching rides:', error);
+    }
+  };
+
+  const fetchMessages = async (rideId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('messages' as any)
+        .select('*, sender:profiles(*)')
+        .eq('ride_id', rideId)
+        .order('created_at', { ascending: true });
+
+      if (error) throw error;
+      
+      const transformedMessages: Message[] = (data || []).map(m => ({
+        id: m.id,
+        rideId: m.ride_id,
+        senderId: m.sender_id,
+        sender: {
+          id: m.sender.user_id,
+          email: m.sender.email,
+          name: m.sender.name,
+          school: m.sender.school,
+          phone: m.sender.phone || '',
+          bio: m.sender.bio || '',
+          avatar: m.sender.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${m.sender.email}`,
+          role: m.sender.role as 'driver' | 'rider' | 'both',
+          rating: Number(m.sender.rating) || 5.0,
+          totalRides: m.sender.total_rides || 0,
+          createdAt: m.sender.created_at,
+        },
+        content: m.content,
+        createdAt: m.created_at,
+      }));
+      
+      setMessages(transformedMessages);
+    } catch (error) {
+      console.error('Error fetching messages:', error);
+    }
+  };
+
   const logout = async () => {
     await supabase.auth.signOut();
     setCurrentUser(null);
@@ -136,101 +206,76 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setSession(null);
   };
 
-  const createRide = (rideData: Omit<Ride, 'id' | 'driver' | 'acceptedRiders' | 'pendingRequests' | 'createdAt' | 'status'>) => {
+  const createRide = async (rideData: any) => {
     if (!currentUser) return;
-    
-    const newRide: Ride = {
-      ...rideData,
-      id: Date.now().toString(),
-      driver: currentUser,
-      acceptedRiders: [],
-      pendingRequests: [],
-      createdAt: new Date().toISOString().split('T')[0],
-      status: 'open',
-    };
-    
-    setRides(prev => [newRide, ...prev]);
+    try {
+      const { error } = await supabase.from('rides').insert({
+        driver_id: currentUser.id,
+        ...rideData,
+        status: 'open',
+      });
+      if (error) throw error;
+      fetchRides();
+    } catch (error) {
+      console.error('Error creating ride:', error);
+    }
   };
 
-  const requestRide = (rideId: string, message: string) => {
+  const requestRide = async (rideId: string, message: string) => {
     if (!currentUser) return;
-    
-    const newRequest: RideRequest = {
-      id: Date.now().toString(),
-      rideId,
-      riderId: currentUser.id,
-      rider: currentUser,
-      message,
-      status: 'pending',
-      createdAt: new Date().toISOString(),
-    };
-    
-    setRides(prev => prev.map(ride => {
-      if (ride.id === rideId) {
-        return {
-          ...ride,
-          pendingRequests: [...ride.pendingRequests, newRequest],
-        };
-      }
-      return ride;
-    }));
+    try {
+      const { error } = await supabase.from('ride_requests').insert({
+        ride_id: rideId,
+        rider_id: currentUser.id,
+        message,
+        status: 'pending',
+      });
+      if (error) throw error;
+      fetchRides();
+    } catch (error) {
+      console.error('Error requesting ride:', error);
+    }
   };
 
-  const acceptRequest = (rideId: string, requestId: string) => {
-    setRides(prev => prev.map(ride => {
-      if (ride.id === rideId) {
-        const request = ride.pendingRequests.find(r => r.id === requestId);
-        if (!request) return ride;
-        
-        return {
-          ...ride,
-          acceptedRiders: [...ride.acceptedRiders, request.rider],
-          pendingRequests: ride.pendingRequests.filter(r => r.id !== requestId),
-          seatsAvailable: ride.seatsAvailable - 1,
-          status: ride.seatsAvailable - 1 === 0 ? 'full' : ride.status,
-        };
-      }
-      return ride;
-    }));
+  const acceptRequest = async (rideId: string, requestId: string) => {
+    try {
+      const { error } = await supabase.from('ride_requests').update({ status: 'accepted' }).eq('id', requestId);
+      if (error) throw error;
+      fetchRides();
+    } catch (error) {
+      console.error('Error accepting request:', error);
+    }
   };
 
-  const declineRequest = (rideId: string, requestId: string) => {
-    setRides(prev => prev.map(ride => {
-      if (ride.id === rideId) {
-        return {
-          ...ride,
-          pendingRequests: ride.pendingRequests.filter(r => r.id !== requestId),
-        };
-      }
-      return ride;
-    }));
+  const declineRequest = async (rideId: string, requestId: string) => {
+    try {
+      const { error } = await supabase.from('ride_requests').update({ status: 'declined' }).eq('id', requestId);
+      if (error) throw error;
+      fetchRides();
+    } catch (error) {
+      console.error('Error declining request:', error);
+    }
   };
 
-  const sendMessage = (rideId: string, content: string) => {
+  const sendMessage = async (rideId: string, content: string) => {
     if (!currentUser) return;
-    
-    const newMessage: Message = {
-      id: Date.now().toString(),
-      rideId,
-      senderId: currentUser.id,
-      sender: currentUser,
-      content,
-      createdAt: new Date().toISOString(),
-    };
-    
-    setMessages(prev => [...prev, newMessage]);
+    try {
+      const { error } = await supabase.from('messages' as any).insert({
+        ride_id: rideId,
+        sender_id: currentUser.id,
+        content,
+      });
+      if (error) throw error;
+      fetchMessages(rideId);
+    } catch (error) {
+      console.error('Error sending message:', error);
+    }
   };
 
   const updateProfile = async (updates: Partial<User>) => {
     if (!currentUser || !supabaseUser) return;
-    
-    const updatedUser = { ...currentUser, ...updates };
-    setCurrentUser(updatedUser);
-    
-    // Update in Supabase
-    await supabase
-      .from('profiles')
-      .update({
+    try {
+      const { error } = await supabase.from('profiles').update({
         name: updates.name,
         phone: updates.phone,
         bio: updates.bio,
@@ -248,8 +293,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
         major: updates.major,
         sport_preference: updates.sportPreference,
         favorite_music: updates.favoriteMusic,
-      })
-      .eq('user_id', supabaseUser.id);
+      }).eq('user_id', supabaseUser.id);
+      if (error) throw error;
+      fetchUserProfile(supabaseUser.id);
+    } catch (error) {
+      console.error('Error updating profile:', error);
+    }
   };
 
   return (
@@ -269,6 +318,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       declineRequest,
       sendMessage,
       updateProfile,
+      fetchMessages
     }}>
       {children}
     </AppContext.Provider>
@@ -277,8 +327,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
 export function useApp() {
   const context = useContext(AppContext);
-  if (!context) {
-    throw new Error('useApp must be used within AppProvider');
-  }
+  if (!context) throw new Error('useApp must be used within AppProvider');
   return context;
 }
