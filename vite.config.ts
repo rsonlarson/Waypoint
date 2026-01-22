@@ -1,61 +1,58 @@
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react-swc";
-import { VitePWA } from "vite-plugin-pwa";
-import tsconfigPaths from "vite-tsconfig-paths";
-import path from "path";
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react-swc'
+import { VitePWA } from 'vite-plugin-pwa'
+import tsconfigPaths from 'vite-tsconfig-paths'
+import path from 'path'
 
 export default defineConfig({
+  server: {
+    host: '0.0.0.0',
+    port: 5000,
+  },
   plugins: [
     react(),
     tsconfigPaths(),
     VitePWA({
-      injectRegister: "auto",
-      registerType: "autoUpdate",
-      includeAssets: ["icons/*.png"],
-      strategies: "generateSW",
+      injectRegister: 'auto',
+      registerType: 'autoUpdate',
+      includeAssets: ['icons/*.png'],
+      strategies: 'generateSW',
       workbox: {
-        globPatterns: ["**/*.{js,css,html,ico,png,svg,woff2}"],
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
       },
       manifest: {
-        name: "Waypoint",
-        short_name: "Waypoint",
-        description: "Plan rides. Find your crew. Get there together.",
-        id: "/",
-        start_url: "/",
-        display: "standalone",
-        background_color: "#ffffff",
-        theme_color: "#0f172a",
+        name: 'Waypoint',
+        short_name: 'Waypoint',
+        description: 'Plan rides. Find your crew. Get there together.',
+        id: '/',
+        start_url: '/',
+        display: 'standalone',
+        background_color: '#ffffff',
+        theme_color: '#0f172a',
         icons: [
           {
-            src: "/icons/waypoint-192.png",
-            sizes: "192x192",
-            type: "image/png",
+            src: '/icons/waypoint-192.png',
+            sizes: '192x192',
+            type: 'image/png'
           },
           {
-            src: "/icons/waypoint-512.png",
-            sizes: "512x512",
-            type: "image/png",
+            src: '/icons/waypoint-512.png',
+            sizes: '512x512',
+            type: 'image/png'
           },
           {
-            src: "/icons/waypoint-maskable.png",
-            sizes: "512x512",
-            type: "image/png",
-            purpose: "maskable",
-          },
-        ],
-      },
-    }),
+            src: '/icons/waypoint-maskable.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'maskable'
+          }
+        ]
+      }
+    })
   ],
   resolve: {
     alias: {
-      "@": path.resolve(import.meta.dirname, "client", "src"),
-      "@shared": path.resolve(import.meta.dirname, "shared"),
-      "@assets": path.resolve(import.meta.dirname, "attached_assets"),
-    },
-  },
-  root: path.resolve(import.meta.dirname, "client"),
-  build: {
-    outDir: path.resolve(import.meta.dirname, "dist/public"),
-    emptyOutDir: true,
-  },
-});
+      '@': path.resolve(__dirname, './src')
+    }
+  }
+})
