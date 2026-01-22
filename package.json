@@ -1,12 +1,11 @@
 {
-  "name": "waypoint-carpool",
+  "name": "vite_react_shadcn_ts",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "tsx server/index.ts",
-    "build": "vite build && esbuild server/index.ts --bundle --platform=node --outfile=dist/index.cjs --format=cjs --packages=external",
-    "db:push": "drizzle-kit push",
+    "dev": "vite",
+    "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
