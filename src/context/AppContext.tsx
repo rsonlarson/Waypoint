@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { User as SupabaseUser, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
-import { User, Ride, RideRequest, Message } from '@/types';
+import { User, Ride, Message } from '@/types';
 
 interface AppContextType {
   currentUser: User | null;
@@ -13,7 +13,7 @@ interface AppContextType {
   isAuthenticated: boolean;
   isLoading: boolean;
   logout: () => Promise<void>;
-  createRide: (ride: Omit<Ride, 'id' | 'driver' | 'acceptedRiders' | 'pendingRequests' | 'createdAt' | 'status'>) => Promise<void>;
+  createRide: (rideData: any) => Promise<void>;
   requestRide: (rideId: string, message: string) => Promise<void>;
   acceptRequest: (rideId: string, requestId: string) => Promise<void>;
   declineRequest: (rideId: string, requestId: string) => Promise<void>;
@@ -115,15 +115,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
     try {
       const { data, error } = await supabase
         .from('rides')
-        .select(`
-          *,
-          driver:profiles!rides_driver_id_fkey(*)
-        `)
+        .select('*, driver:profiles!rides_driver_id_fkey(*)')
         .order('created_at', { ascending: false });
 
       if (error) throw error;
       
-      const transformedRides: Ride[] = (data || []).map(r => ({
+      const transformedRides: Ride[] = (data || []).map((r: any) => ({
         id: r.id,
         driverId: r.driver_id,
         driver: {
@@ -165,14 +162,14 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const fetchMessages = async (rideId: string) => {
     try {
       const { data, error } = await supabase
-        .from('messages')
-        .select('*, sender:profiles(*)')
+        .from('messages' as any)
+        .select('*, sender:profiles!messages_sender_id_fkey(*)')
         .eq('ride_id', rideId)
         .order('created_at', { ascending: true });
 
       if (error) throw error;
       
-      const transformedMessages: Message[] = (data || []).map(m => ({
+      const transformedMessages: Message[] = (data || []).map((m: any) => ({
         id: m.id,
         rideId: m.ride_id,
         senderId: m.sender_id,
@@ -270,7 +267,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const sendMessage = async (rideId: string, content: string) => {
     if (!currentUser) return;
     try {
-      const { error } = await supabase.from('messages').insert({
+      const { error } = await supabase.from('messages' as any).insert({
         ride_id: rideId,
         sender_id: currentUser.id,
         content,
