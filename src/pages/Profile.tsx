@@ -54,6 +54,17 @@ export default function Profile() {
   };
 
   const handleSave = () => {
+    const isDriverRole = role !== 'rider';
+    
+    if (isDriverRole && (!vehicleMake || !vehicleModel || !vehicleYear)) {
+      toast({ 
+        title: 'Vehicle details required', 
+        description: 'Please provide your car details (Year, Make, Model) to save as a driver.',
+        variant: 'destructive'
+      });
+      return;
+    }
+
     updateProfile({
       name,
       phone,
@@ -64,7 +75,7 @@ export default function Profile() {
       major,
       sportPreference,
       favoriteMusic,
-      vehicle: role !== 'rider' ? {
+      vehicle: isDriverRole ? {
         make: vehicleMake,
         model: vehicleModel,
         color: vehicleColor,

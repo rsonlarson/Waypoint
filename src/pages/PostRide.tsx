@@ -43,6 +43,24 @@ export default function PostRide() {
     return null;
   }
 
+  if (currentUser?.role === 'rider') {
+    return (
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
+        <Header />
+        <Card className="max-w-md w-full text-center p-8 shadow-card">
+          <Car className="h-12 w-12 text-primary mx-auto mb-4" />
+          <h2 className="text-2xl font-bold mb-2">Driver Status Required</h2>
+          <p className="text-muted-foreground mb-6">
+            Only drivers can post rides. Please update your profile to include your vehicle information and change your role to "Driver".
+          </p>
+          <Button onClick={() => navigate('/profile')} variant="gradient" className="w-full">
+            Update Profile to Driver
+          </Button>
+        </Card>
+      </div>
+    );
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
