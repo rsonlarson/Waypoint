@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AppProvider } from "@/context/AppContext";
 import { NotificationProvider } from "@/context/NotificationContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
+import { SplashScreen } from "./components/layout/SplashScreen";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Rides from "./pages/Rides";
@@ -25,6 +26,7 @@ const App = () => (
     <AppProvider>
       <NotificationProvider>
         <TooltipProvider>
+          <SplashScreen />
           <Toaster />
           <Sonner />
           <BrowserRouter>
