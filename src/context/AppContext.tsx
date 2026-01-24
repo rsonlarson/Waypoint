@@ -165,7 +165,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const fetchMessages = async (rideId: string) => {
     try {
       const { data, error } = await supabase
-        .from('messages')
+        .from('messages' as any)
         .select('*, sender:profiles(*)')
         .eq('ride_id', rideId)
         .order('created_at', { ascending: true });
@@ -270,7 +270,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const sendMessage = async (rideId: string, content: string) => {
     if (!currentUser) return;
     try {
-      const { error } = await supabase.from('messages').insert({
+      const { error } = await supabase.from('messages' as any).insert({
         ride_id: rideId,
         sender_id: currentUser.id,
         content,
