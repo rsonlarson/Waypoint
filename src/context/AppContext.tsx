@@ -165,7 +165,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const fetchMessages = async (rideId: string) => {
     try {
       const { data, error } = await supabase
-        .from('messages' as any)
+        .from('messages')
         .select('*, sender:profiles(*)')
         .eq('ride_id', rideId)
         .order('created_at', { ascending: true });
@@ -211,7 +211,17 @@ export function AppProvider({ children }: { children: ReactNode }) {
     try {
       const { error } = await supabase.from('rides').insert({
         driver_id: currentUser.id,
-        ...rideData,
+        destination: rideData.destination,
+        departure_date: rideData.departureDate,
+        departure_time: rideData.departureTime,
+        departure_location: rideData.departureLocation,
+        return_date: rideData.returnDate,
+        return_time: rideData.returnTime,
+        seats_available: rideData.seatsAvailable,
+        seats_total: rideData.seatsTotal,
+        gear_capacity: rideData.gearCapacity,
+        cost_per_rider: rideData.costPerRider,
+        notes: rideData.notes,
         status: 'open',
       });
       if (error) throw error;
@@ -260,7 +270,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const sendMessage = async (rideId: string, content: string) => {
     if (!currentUser) return;
     try {
-      const { error } = await supabase.from('messages' as any).insert({
+      const { error } = await supabase.from('messages').insert({
         ride_id: rideId,
         sender_id: currentUser.id,
         content,
