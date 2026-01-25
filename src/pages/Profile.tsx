@@ -41,6 +41,7 @@ export default function Profile() {
   const [gearStorage, setGearStorage] = useState(currentUser?.vehicle?.gearStorage || '');
   const [passengerCapacity, setPassengerCapacity] = useState(currentUser?.vehicle?.passengerCapacity?.toString() || '4');
   const [gearCapacity, setGearCapacity] = useState(currentUser?.vehicle?.gearCapacity?.toString() || '4');
+  const [vehicleMPG, setVehicleMPG] = useState(currentUser?.vehicle?.mpg?.toString() || '25');
   const [imageOpen, setImageOpen] = useState(false);
 
   if (!isAuthenticated || !currentUser) {
@@ -84,6 +85,7 @@ export default function Profile() {
         gearStorage,
         passengerCapacity: parseInt(passengerCapacity),
         gearCapacity: parseInt(gearCapacity),
+        mpg: vehicleMPG ? parseFloat(vehicleMPG) : undefined,
       } : undefined,
     });
     setIsEditing(false);
@@ -311,6 +313,18 @@ export default function Profile() {
                                 ))}
                               </SelectContent>
                             </Select>
+                          </div>
+                          <div className="space-y-2">
+                            <Label>Vehicle MPG</Label>
+                            <Input 
+                              type="number" 
+                              value={vehicleMPG} 
+                              onChange={(e) => setVehicleMPG(e.target.value)} 
+                              placeholder="e.g., 25"
+                              min="1"
+                              step="0.1"
+                            />
+                            <p className="text-xs text-muted-foreground">Used to estimate ride costs (Avg: 25)</p>
                           </div>
                         </div>
                       </div>

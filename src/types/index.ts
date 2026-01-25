@@ -27,6 +27,7 @@ export interface Vehicle {
   gearStorage?: string;
   passengerCapacity: number;
   gearCapacity: number;
+  mpg?: number;
 }
 
 export interface Ride {
@@ -104,10 +105,10 @@ export const RESORTS = Object.keys(RESORT_DISTANCES);
 export type Resort = keyof typeof RESORT_DISTANCES;
 
 // Calculate gas cost for a round trip to a resort
-export function calculateGasCost(resort: string): number {
+export function calculateGasCost(resort: string, mpg: number = AVERAGE_MPG): number {
   const oneWayMiles = RESORT_DISTANCES[resort] || 0;
   const roundTripMiles = oneWayMiles * 2;
-  const gallonsNeeded = roundTripMiles / AVERAGE_MPG;
+  const gallonsNeeded = roundTripMiles / mpg;
   const totalCost = gallonsNeeded * GAS_PRICE_PER_GALLON;
   return Math.round(totalCost);
 }

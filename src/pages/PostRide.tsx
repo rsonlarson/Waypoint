@@ -32,11 +32,12 @@ export default function PostRide() {
   const [loading, setLoading] = useState(false);
   const [driverWaiverAccepted, setDriverWaiverAccepted] = useState(false);
 
-  // Auto-calculate cost based on destination
+  // Auto-calculate cost based on destination and driver's MPG
   const costPerRider = useMemo(() => {
     if (!destination) return 0;
-    return calculateGasCost(destination);
-  }, [destination]);
+    const mpg = currentUser?.vehicle?.mpg || AVERAGE_MPG;
+    return calculateGasCost(destination, mpg);
+  }, [destination, currentUser]);
 
   if (!isAuthenticated) {
     navigate('/auth');
@@ -271,14 +272,15 @@ export default function PostRide() {
                         </div>
                         <div className="text-xs text-muted-foreground space-y-1">
                           <p>📍 {RESORT_DISTANCES[destination]} miles each way ({RESORT_DISTANCES[destination] * 2} mi round trip)</p>
-                          <p>⛽ ${GAS_PRICE_PER_GALLON.toFixed(2)}/gal × {((RESORT_DISTANCES[destination] * 2) / AVERAGE_MPG).toFixed(1)} gal needed</p>
+                          <p>⛽ ${GAS_PRICE_PER_GALLON.toFixed(2)}/gal × {((RESORT_DISTANCES[destination] * 2) / (currentUser?.vehicle?.mpg || AVERAGE_MPG)).toFixed(1)} gal needed</p>
+                          <p>🚗 Using {currentUser?.vehicle?.mpg || AVERAGE_MPG} MPG for calculation</p>
                         </div>
                       </div>
                     ) : (
                       <p className="text-sm text-muted-foreground">Select a destination to see gas cost</p>
                     )}
                   </div>
-                  <p className="text-xs text-muted-foreground">Based on gas prices in Golden ($2.40/gal) and {AVERAGE_MPG} MPG</p>
+                  <p className="text-xs text-muted-foreground">Based on gas prices in Golden ($2.40/gal) and your vehicle's MPG ({currentUser?.vehicle?.mpg || AVERAGE_MPG})</p>
                 </div>
 
                 {/* Notes */}
