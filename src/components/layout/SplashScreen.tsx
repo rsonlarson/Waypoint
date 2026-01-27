@@ -24,7 +24,7 @@ export function SplashScreen() {
 
   return (
     <div 
-      className={`fixed inset-0 z-[100] flex flex-col items-center justify-center bg-evergreen transition-opacity duration-500 ${isVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+      className={`fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#0f172a] transition-opacity duration-500 ${isVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
     >
       <div className="relative animate-in fade-in zoom-in duration-700">
         <div className="flex items-center justify-center h-24 w-24 rounded-full bg-white/10 backdrop-blur-sm mb-6 border border-white/20">
