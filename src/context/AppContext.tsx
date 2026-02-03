@@ -72,7 +72,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
         .eq('user_id', userId)
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error("fetchUserProfile supabase error", error);
+        throw error;
+      }
 
       if (profile) {
         const user: User = {
